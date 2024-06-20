@@ -1,0 +1,6 @@
+@FcCupApi_HostAddress = http://localhost:5252
+
+GET {{FcCupApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
