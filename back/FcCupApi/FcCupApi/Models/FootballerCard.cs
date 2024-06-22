@@ -4,9 +4,10 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string AvatarUrl { get; set; }
+        public string ImageUrl { get; set; }
+        public Club Club { get; set; }
         public string CardTypeUrl { get; set; }
         public int OverallRating { get; set; }
-        public List<Statistic<FootballerCard>> Stats { get; set; }
+        public List<StatisticGroup<FootballerCard>> Stats { get; set; }
     }
 }

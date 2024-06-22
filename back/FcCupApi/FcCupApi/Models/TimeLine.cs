@@ -1,4 +1,6 @@
-﻿namespace FcCupApi.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace FcCupApi.Models
 {
     public enum TimeLineActionType
     {
@@ -8,6 +10,7 @@
         Substitution,
         Injury
     }
+    [Keyless]
     public class TimeLine
     {
         public int Minute { get; set; }

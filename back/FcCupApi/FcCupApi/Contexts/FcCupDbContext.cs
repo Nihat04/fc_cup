@@ -1,5 +1,6 @@
 ﻿using FcCupApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.SqlServer.Management.Smo;
 
 namespace FcCupApi.Contexts
 {
@@ -21,9 +22,27 @@ namespace FcCupApi.Contexts
         public DbSet<GroupStage> GroupStages { get; set; } = null!;
         public DbSet<GroupStagePlayer> GroupStagePlayers { get; set; } = null!;
         public DbSet<TimeLine> TimeLines { get; set; } = null!;
-        public DbSet<Statistic<Player>> PlayersStats { get; set; } = null!;
-        public DbSet<Statistic<Club>> ClubsStats { get; set; } = null!;
-        public DbSet<Statistic<FootballerCard>> FootballersStats { get; set; } = null!;
+        public DbSet<StatisticGroup<Player>> PlayersStats { get; set; } = null!;
+        public DbSet<StatisticGroup<Club>> ClubsStats { get; set; } = null!;
+        public DbSet<StatisticGroup<FootballerCard>> FootballersStats { get; set; } = null!;
         public DbSet<Lineup> Lineups { get; set; } = null!;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<TournamentPlayer>()
+                .HasKey(tp => new { tp.TournamentId, tp.PlayerId, tp.ClubId });
+
+            modelBuilder.Entity<TournamentPlayer>()
+                .HasOne(tournament => tournament.Tournament)
+                .WithMany(tp => tp.Players)
+                .HasForeignKey(tp => tp.PlayerId);
+
+            modelBuilder.Entity<TournamentPlayer>()
+                .HasOne(player => player.Player)
+                .WithMany(tp => tp.Tournaments)
+                .HasForeignKey(tp => tp.TournamentId);
+        }
     }
 }   

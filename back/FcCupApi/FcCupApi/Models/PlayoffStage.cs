@@ -2,6 +2,6 @@
 {
     public class PlayoffStage: Stage
     {
-        List<TournamentPlayer> TournamentPlayers { get; set; }
+        public List<TournamentPlayer> TournamentPlayers { get; set; }
     }
 }

@@ -1,5 +1,8 @@
-﻿namespace FcCupApi.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace FcCupApi.Models
 {
+    [Keyless]
     public class GroupStagePlayer
     {
         public TournamentPlayer TournamentPlayer {  get; set; }
