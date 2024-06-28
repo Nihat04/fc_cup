@@ -22,27 +22,35 @@ namespace FcCupApi.Contexts
         public DbSet<GroupStage> GroupStages { get; set; } = null!;
         public DbSet<GroupStagePlayer> GroupStagePlayers { get; set; } = null!;
         public DbSet<TimeLine> TimeLines { get; set; } = null!;
-        public DbSet<StatisticGroup<Player>> PlayersStats { get; set; } = null!;
-        public DbSet<StatisticGroup<Club>> ClubsStats { get; set; } = null!;
-        public DbSet<StatisticGroup<FootballerCard>> FootballersStats { get; set; } = null!;
+        public DbSet<StatisticGroup<Player>> PlayersGroupStats { get; set; } = null!;
+        public DbSet<StatisticGroup<Club>> ClubsGroupStats { get; set; } = null!;
+        public DbSet<StatisticGroup<FootballerCard>> FootballersGruopStats { get; set; } = null!;
+        public DbSet<Statistic<Player>> PlayersStats { get; set; } = null!;
+        public DbSet<Statistic<Club>> ClubsStats { get; set; } = null!;
+        public DbSet<Statistic<FootballerCard>> FootballersStats { get; set; } = null!;
         public DbSet<Lineup> Lineups { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<TournamentPlayer>()
-                .HasKey(tp => new { tp.TournamentId, tp.PlayerId, tp.ClubId });
+            modelBuilder.Entity<TournamentPlayer>().HasKey(tp => tp.Id);
+            modelBuilder.Entity<TournamentPlayer>().HasKey(tp => new {tp.TournamentId, tp.PlayerId, tp.ClubId});
 
             modelBuilder.Entity<TournamentPlayer>()
-                .HasOne(tournament => tournament.Tournament)
-                .WithMany(tp => tp.Players)
+                .HasOne(tp => tp.Tournament)
+                .WithMany(t => t.Players)
+                .HasForeignKey(tp => tp.TournamentId);
+
+            modelBuilder.Entity<TournamentPlayer>()
+                .HasOne(tp => tp.Player)
+                .WithMany(p => p.Tournaments)
                 .HasForeignKey(tp => tp.PlayerId);
 
             modelBuilder.Entity<TournamentPlayer>()
-                .HasOne(player => player.Player)
-                .WithMany(tp => tp.Tournaments)
-                .HasForeignKey(tp => tp.TournamentId);
+                .HasOne(tp => tp.Club)
+                .WithMany(c => c.Tournaments)
+                .HasForeignKey(tp => tp.ClubId);
         }
     }
 }   

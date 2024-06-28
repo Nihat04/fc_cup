@@ -10,9 +10,9 @@ namespace FcCupApi.Models
         Substitution,
         Injury
     }
-    [Keyless]
     public class TimeLine
     {
+        public int Id { get; set; }
         public int Minute { get; set; }
         public TimeLineActionType Type { get; set; }
         public Player Player { get; set; }

@@ -10,6 +10,6 @@
         public List<Stage> Stages { get; set; }
         public List<TournamentPlayer> Players { get; set; }
         public List<Match> Matches { get; set; }
-        public List<Statistic<TournamentPlayer>> Stats { get; set; }
+        public List<StatisticGroup<TournamentPlayer>> Stats { get; set; }
     }
 }
