@@ -47,7 +47,7 @@ namespace FcCupApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTournamentPlayer(int id, TournamentPlayer tournamentPlayer)
         {
-            if (id != tournamentPlayer.TournamentId)
+            if (id != tournamentPlayer.Tournament.Id)
             {
                 return BadRequest();
             }
@@ -85,7 +85,7 @@ namespace FcCupApi.Controllers
             }
             catch (DbUpdateException)
             {
-                if (TournamentPlayerExists(tournamentPlayer.TournamentId))
+                if (TournamentPlayerExists(tournamentPlayer.Tournament.Id))
                 {
                     return Conflict();
                 }
@@ -95,7 +95,7 @@ namespace FcCupApi.Controllers
                 }
             }
 
-            return CreatedAtAction("GetTournamentPlayer", new { id = tournamentPlayer.TournamentId }, tournamentPlayer);
+            return CreatedAtAction("GetTournamentPlayer", new { id = tournamentPlayer.Tournament.Id }, tournamentPlayer);
         }
 
         // DELETE: api/TournamentPlayers/5
@@ -116,7 +116,7 @@ namespace FcCupApi.Controllers
 
         private bool TournamentPlayerExists(int id)
         {
-            return _context.TournamentPlayers.Any(e => e.TournamentId == id);
+            return _context.TournamentPlayers.Any(e => e.Tournament.Id == id);
         }
     }
 }

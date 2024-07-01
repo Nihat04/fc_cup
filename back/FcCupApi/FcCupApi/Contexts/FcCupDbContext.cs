@@ -32,25 +32,7 @@ namespace FcCupApi.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<TournamentPlayer>().HasKey(tp => tp.PlayerId);
-            modelBuilder.Entity<TournamentPlayer>().HasKey(tp => new {tp.TournamentId, tp.PlayerId, tp.ClubId});
-
-            modelBuilder.Entity<TournamentPlayer>()
-                .HasOne(tp => tp.Tournament)
-                .WithMany(t => t.Players)
-                .HasForeignKey(tp => tp.TournamentId);
-
-            modelBuilder.Entity<TournamentPlayer>()
-                .HasOne(tp => tp.Player)
-                .WithMany(p => p.Tournaments)
-                .HasForeignKey(tp => tp.PlayerId);
-
-            modelBuilder.Entity<TournamentPlayer>()
-                .HasOne(tp => tp.Club)
-                .WithMany(c => c.Tournaments)
-                .HasForeignKey(tp => tp.ClubId);
         }
     }
 }   

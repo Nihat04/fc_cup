@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FcCupApi.Contexts;
 using FcCupApi.Models;
+using FcCupApi.DBO;
 
 namespace FcCupApi.Controllers
 {
@@ -78,10 +79,12 @@ namespace FcCupApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Player>> PostPlayer(Player player)
         {
-            _context.Players.Add(player);
+            var newPlayer = player;
+
+            _context.Players.Add(newPlayer);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPlayer", new { id = player.Id }, player);
+            return CreatedAtAction("GetPlayer", new { id = newPlayer.Id }, newPlayer);
         }
 
         // DELETE: api/Players/5

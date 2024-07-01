@@ -23,10 +23,10 @@ namespace FcCupApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ShortTournament>>> GetTournaments()
+        public async Task<ActionResult<IEnumerable<ShortTournamentDTO>>> GetTournaments()
         {
             var tournaments = await _context.Tournaments.ToListAsync();
-            return tournaments.ConvertAll<ShortTournament>(tournament => new ShortTournament(tournament));
+            return tournaments.ConvertAll<ShortTournamentDTO>(tournament => new ShortTournamentDTO(tournament));
         }
 
         [HttpGet("{id}")]

@@ -1,4 +1,5 @@
 using FcCupApi.Contexts;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.EntityFramework;
@@ -30,7 +31,3 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
-
-
-
-

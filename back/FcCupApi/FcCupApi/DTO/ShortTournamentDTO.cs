@@ -2,13 +2,13 @@
 
 namespace FcCupApi.DBO
 {
-    public class ShortTournament
+    public class ShortTournamentDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string ImageUrl { get; set; }
 
-        public ShortTournament(Tournament tournament)
+        public ShortTournamentDTO(Tournament tournament)
         {
             Id = tournament.Id;
             Name = tournament.Name;
