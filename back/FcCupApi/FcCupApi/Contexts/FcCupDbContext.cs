@@ -34,7 +34,7 @@ namespace FcCupApi.Contexts
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<TournamentPlayer>().HasKey(tp => tp.Id);
+            modelBuilder.Entity<TournamentPlayer>().HasKey(tp => tp.PlayerId);
             modelBuilder.Entity<TournamentPlayer>().HasKey(tp => new {tp.TournamentId, tp.PlayerId, tp.ClubId});
 
             modelBuilder.Entity<TournamentPlayer>()

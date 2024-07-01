@@ -1,10 +1,18 @@
 using FcCupApi.Contexts;
+using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
+using MySql.Data.EntityFramework;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 builder.Services.AddControllers();
-builder.Services.AddDbContext<FcCupDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<FcCupDbContext>(options => 
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"), 
+        new MySqlServerVersion(new Version(9, 0, 0))));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -22,3 +30,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+
+
+
+
