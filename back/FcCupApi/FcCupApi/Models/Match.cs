@@ -10,6 +10,7 @@ namespace FcCupApi.Models
         public TournamentPlayer Player2 { get; set; }
         [NotMapped]
         public List<TimeLine> TimeLines { get; set; }
+        public List<Lineup> Lineups { get; set; }
         public List<CompareStatistic<TournamentPlayer>>? Stats { get; set; }
         public List<StatisticGroup<FootballerCard>>? FootballerCardsStats { get; set; }
         public Stage Stage { get; set; }

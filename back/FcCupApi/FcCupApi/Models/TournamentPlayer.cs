@@ -4,12 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FcCupApi.Models
 {
-    [Keyless]
     public class TournamentPlayer
     {
-        public int PlayerId { get; set; }
+        public int Id { get; set; }
         public Player Player { get; set; }
-        public int TournamentId { get; set; }
         public Tournament Tournament { get; set; }
+        public Club Club { get; set; }
+        public List<Statistic<Player>> PlayerStats { get; set; }
     }
-}
+ }
