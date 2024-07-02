@@ -77,9 +77,16 @@ namespace FcCupApi.Controllers
         // POST: api/Players
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Player>> PostPlayer(Player player)
+        public async Task<ActionResult<Player>> PostPlayer(PlayerDTO player)
         {
-            var newPlayer = player;
+            var newPlayer = new Player
+            {
+                Name = player.Name,
+                ImageUrl = player.ImageUrl,
+                Tournaments = new List<TournamentPlayer>(),
+                Stats = new List<Statistic<Player>>(),
+                Links = player.Links
+            };
 
             _context.Players.Add(newPlayer);
             await _context.SaveChangesAsync();
