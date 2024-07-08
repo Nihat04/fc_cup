@@ -1,0 +1,25 @@
+@import url("../../index.module.css");
+
+.overview {
+    display: flex;
+    margin-bottom: 35px;
+    padding: 25px 20px;
+    background-color: var(--island-color);
+    border: 1px var(--main-color) solid;
+    border-radius: 15px;
+    gap: 20px;
+}
+
+.overview__image {
+    max-width: 180px;
+    border-radius: 5px;
+}
+
+.overview__content {
+    padding-top: 15px;
+}
+
+.overview__header {
+    font-weight: 700;
+    font-size: 40px;
+}

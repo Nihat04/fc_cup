@@ -1,0 +1,44 @@
+@import url("../../index.module.css");
+
+.information-panel {
+    width: 100%;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.information-panel__tabs {
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.information-panel__tabs__btn {
+    padding: 10px;
+    background: none;
+}
+
+.information-panel__tabs__btn--active {
+    background-color: var(--island-color);
+}
+
+.information-panel__information {
+    margin: 0;
+    padding: 10px 20px;
+    background-color: var(--island-color);
+}
+
+.information-panel__information__group__plates {
+    --gap: 20px;
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: var(--gap);
+}
+
+.information-panel__information__group__plate {
+    display: flex;
+    padding: 10px;
+    width: calc((100% - var(--gap)) / 2);
+    justify-content: space-between;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 7px;
+}
