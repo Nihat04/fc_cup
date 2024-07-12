@@ -1,10 +1,11 @@
 ﻿using FcCupApi.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace FcCupApi.Contexts
 {
-    public class UsersDbContext : IdentityDbContext<User>
+    public class UsersDbContext : IdentityDbContext<User, IdentityRole<long>, long>
     {
         public UsersDbContext(DbContextOptions<UsersDbContext> options) : base(options)
         {
