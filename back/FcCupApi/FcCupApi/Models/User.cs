@@ -7,8 +7,8 @@ namespace FcCupApi.Models
     {
         public string? RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
-        public override string? Email {  get; set; }
-        public override string? UserName { get; set; }
+        //public string? Email {  get; set; }
+        //public string? UserName { get; set; }
         public string? Password { get; set; }
         public DateTime RegistrationDateTime { get; set; }
         public List<Comment>? Comments { get ; set; }

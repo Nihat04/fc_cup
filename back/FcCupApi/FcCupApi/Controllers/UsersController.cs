@@ -11,6 +11,10 @@ using FcCupApi.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authorization;
+using Azure.Identity;
+using Microsoft.AspNetCore.Http.Extensions;
+using mailService.Services;
+using mailService.Models;
 
 namespace FcCupApi.Controllers
 {
@@ -23,14 +27,21 @@ namespace FcCupApi.Controllers
         private readonly ITokenService _tokenService;
         private readonly IConfiguration _configuration;
         private readonly RoleManager<IdentityRole<long>> _roleManager;
+        private readonly IMailService _mailService;
 
-        public UsersController(ITokenService tokenService, UsersDbContext context, UserManager<User> userManager, IConfiguration configuration, RoleManager<IdentityRole<long>> roleManager)
+        public UsersController(ITokenService tokenService, 
+            UsersDbContext context, 
+            UserManager<User> userManager, 
+            IConfiguration configuration, 
+            RoleManager<IdentityRole<long>> roleManager,
+            IMailService mailService)
         {
             _tokenService = tokenService;
             _context = context;
             _userManager = userManager;
             _configuration = configuration;
             _roleManager = roleManager;
+            _mailService = mailService;
         }
 
         [HttpPost("login")]
@@ -185,6 +196,35 @@ namespace FcCupApi.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpPost]
+        [Route("send-confirm")]
+        public async Task<IActionResult> SendAccountMailConfirmMessage([FromBody] RegisterRequest request)
+        {
+            var user = new User() { Email = request.Email, UserName = request.Email};
+            var result = await _userManager.FindByEmailAsync(user.Email);
+
+            //DataProtectorTokenProvider
+            if (result != null)
+            {
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(result);
+
+                var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = token });
+
+                var mailData = new MailData(new List<string>() { user.Email }, "Account Email Confirmation", $"{callbackUrl}");
+
+                var mailActionResult = await _mailService.SendAsync(mailData);
+
+                if (mailActionResult)
+                    return Ok("Check your email");
+                else
+                    return StatusCode(500);
+            }
+            else
+            {
+                return NotFound("User not found");
+            }
         }
     }
 }

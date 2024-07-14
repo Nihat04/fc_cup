@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using mailService.Configuration;
+using mailService.Services;
+using FcCupApi.Providers;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,7 +59,8 @@ builder.Services.AddIdentity<User, IdentityRole<long>>()
     .AddEntityFrameworkStores<UsersDbContext>()
     .AddUserManager<UserManager<User>>()
     .AddSignInManager<SignInManager<User>>()
-    .AddRoleManager<RoleManager<IdentityRole<long>>>();
+    .AddRoleManager<RoleManager<IdentityRole<long>>>()
+    .AddTokenProvider<DataProtectorTokenProvider2<User>>(TokenOptions.DefaultProvider);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
@@ -87,6 +91,13 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 builder.Services.AddControllers();
+
+builder.Services.Configure<MailSettings>(
+        builder
+            .Configuration
+            .GetSection(nameof(MailSettings))
+    );
+builder.Services.AddTransient<IMailService, MailService>();
 
 var app = builder.Build();
 
