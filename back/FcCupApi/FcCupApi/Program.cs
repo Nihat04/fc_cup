@@ -60,7 +60,7 @@ builder.Services.AddIdentity<User, IdentityRole<long>>()
     .AddUserManager<UserManager<User>>()
     .AddSignInManager<SignInManager<User>>()
     .AddRoleManager<RoleManager<IdentityRole<long>>>()
-    .AddTokenProvider<DataProtectorTokenProvider2<User>>(TokenOptions.DefaultProvider);
+    .AddTokenProvider<CustomDataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>

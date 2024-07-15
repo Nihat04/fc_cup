@@ -205,15 +205,11 @@ namespace FcCupApi.Controllers
             var user = new User() { Email = request.Email, UserName = request.Email};
             var result = await _userManager.FindByEmailAsync(user.Email);
 
-            //DataProtectorTokenProvider
             if (result != null)
             {
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(result);
-
-                var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = token });
-
-                var mailData = new MailData(new List<string>() { user.Email }, "Account Email Confirmation", $"{callbackUrl}");
-
+                var callbackUrl = Url.Action("ConfirmEmail", "Users", new { userId = result.Id, code = token });
+                var mailData = new MailData(new List<string>() { user.Email }, "Account Email Confirmation", callbackUrl);
                 var mailActionResult = await _mailService.SendAsync(mailData);
 
                 if (mailActionResult)
@@ -225,6 +221,25 @@ namespace FcCupApi.Controllers
             {
                 return NotFound("User not found");
             }
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+                return NotFound();
+            
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return NotFound();
+
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+
+            if (result.Succeeded)
+                return Ok("Email has been confirmed!");
+            else
+                return NotFound();
         }
     }
 }
