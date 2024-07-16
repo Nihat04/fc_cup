@@ -200,27 +200,26 @@ namespace FcCupApi.Controllers
 
         [HttpPost]
         [Route("send-confirm")]
-        public async Task<IActionResult> SendAccountMailConfirmMessage([FromBody] RegisterRequest request)
+        public async Task<IActionResult> SendAccountMailConfirmMessage([FromBody] EmailConfirmRequest request)
         {
-            var user = new User() { Email = request.Email, UserName = request.Email};
-            var result = await _userManager.FindByEmailAsync(user.Email);
+            var user = await _userManager.FindByEmailAsync(request.Email);
 
-            if (result != null)
+            if (user != null && (await _userManager.CheckPasswordAsync(user, request.Password)))
             {
-                var token = await _userManager.GenerateEmailConfirmationTokenAsync(result);
-                var callbackUrl = Url.Action("ConfirmEmail", "Users", new { userId = result.Id, code = token });
-                var mailData = new MailData(new List<string>() { user.Email }, "Account Email Confirmation", callbackUrl);
-                var mailActionResult = await _mailService.SendAsync(mailData);
-
-                if (mailActionResult)
-                    return Ok("Check your email");
-                else
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                if (token == null)
                     return StatusCode(500);
+
+                var callbackUrl = Url.Action("ConfirmEmail", "Users", new { userId = user.Id, code = token });
+                var mailData = new MailData(new List<string>() { request.Email }, 
+                    "Account Email Confirmation", 
+                    $"Для подтверждения электронной почты пройдите по ссылке: " +
+                    $"<a href='{_configuration["Host"]}{callbackUrl}'>link</a>");
+                var mailActionResult = await _mailService.SendAsync(mailData);
+                return mailActionResult ? Ok("Check your email") : StatusCode(500);
             }
             else
-            {
-                return NotFound("User not found");
-            }
+                return NotFound("Error");
         }
 
         [HttpGet]
