@@ -60,7 +60,7 @@ builder.Services.AddIdentity<User, IdentityRole<long>>()
     .AddUserManager<UserManager<User>>()
     .AddSignInManager<SignInManager<User>>()
     .AddRoleManager<RoleManager<IdentityRole<long>>>()
-    .AddTokenProvider<CustomDataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
+    .AddDefaultTokenProviders();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
@@ -90,6 +90,7 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
+
 builder.Services.AddControllers();
 
 builder.Services.Configure<MailSettings>(
@@ -107,7 +108,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseRouting();

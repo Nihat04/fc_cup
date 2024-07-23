@@ -12,7 +12,7 @@ namespace FcCupApi.Contexts
             Database.EnsureCreated();
         }
 
-        DbSet<Comment> Comments { get; set; }
-        DbSet<Forum> Forums { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Forum> Forums { get; set; }
     }
 }
