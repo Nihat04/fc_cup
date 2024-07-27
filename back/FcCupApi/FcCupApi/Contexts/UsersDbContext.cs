@@ -14,5 +14,6 @@ namespace FcCupApi.Contexts
 
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Forum> Forums { get; set; }
+        public DbSet<CommentRating> CommentRatings { get; set; }
     }
 }

@@ -1,16 +1,11 @@
 ﻿using FcCupApi.Contexts;
-using FcCupApi.Extensions;
 using FcCupApi.Models;
-using FcCupApi.Models.Identity;
 using FcCupApi.Services;
 using mailService.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.SqlServer.Management.Common;
-using System.Data.Entity;
-using System.IdentityModel.Tokens.Jwt;
-using static System.Net.Mime.MediaTypeNames;
+using Microsoft.EntityFrameworkCore;
 
 namespace FcCupApi.Controllers
 {
@@ -45,7 +40,7 @@ namespace FcCupApi.Controllers
         }
 
         [HttpPost]
-        //[Authorize]
+        [Authorize]
         [Route("create-forum")]
         public async Task<IActionResult> CreateForum(string title)
         {
@@ -67,20 +62,22 @@ namespace FcCupApi.Controllers
             if (forum == null)
                 return BadRequest("Invalid forum Id");
 
-            var authHeader = Request.Headers["Authorization"].FirstOrDefault();
-            var accessToken = authHeader?.Split(" ").Last();
-            var principal = _configuration.GetPrincipalFromExpiredToken(accessToken);
-            var username = principal!.Identity!.Name;
+            var username = User.Identity!.Name;
             var user = await _userManager.FindByNameAsync(username!);
 
-            var comment = new Comment() { 
+            if (user == null)
+                return BadRequest("Invalid user");
+
+            var comment = new Comment() 
+            {
                 IsDeleted = false, 
                 AuthorId = user!.Id, 
                 CommentText = text,
                 PublishedDateTime = DateTime.UtcNow, 
                 Rating = 0, 
                 ForumId = forumId,
-                CommentId = parrentCommentId};
+                CommentId = parrentCommentId
+            };
 
             await _context.AddAsync(comment);
             await _context.SaveChangesAsync();
@@ -108,19 +105,47 @@ namespace FcCupApi.Controllers
             if (ratedComment == null)
                 return BadRequest("Invalid Comment Id");
 
-            var authHeader = Request.Headers["Authorization"].FirstOrDefault();
-            var accessToken = authHeader?.Split(" ").Last();
-            var principal = _configuration.GetPrincipalFromExpiredToken(accessToken);
-            var username = principal!.Identity!.Name;
+            var username = User.Identity!.Name;
             var user = await _userManager.FindByNameAsync(username!);
+            if (user == null)
+                return BadRequest("Invalid Token");
 
-            ratedComment.Rating += rate;
-            _context.SaveChanges();
+            var existingRating = await _context.CommentRatings
+                .FirstOrDefaultAsync(cr => 
+                    cr.CommentId == commentId 
+                    && cr.UserId == user.Id);
+
+            if (existingRating != null)
+            {
+                // Убираем оценку, если она совпадает с текущей
+                if (existingRating.Rate == rate)
+                {
+                    ratedComment.Rating -= rate;
+                    _context.CommentRatings.Remove(existingRating);
+                }
+                else
+                {
+                    // Меняем оценку
+                    ratedComment.Rating += 2 * rate; // учитываем изменение оценки (например, с -1 на 1 это +2)
+                    existingRating.Rate = rate;
+                }
+            }
+            else
+            {
+                // Добавляем новую оценку
+                ratedComment.Rating += rate;
+                var commentRating = new CommentRating
+                {
+                    CommentId = commentId,
+                    UserId = user.Id,
+                    Rate = rate
+                };
+                await _context.CommentRatings.AddAsync(commentRating);
+            }
+
+            await _context.SaveChangesAsync();
 
             return Ok();
-
-            //Один и тот же пользователь не может несколько раз оценивать один комментарий,
-            //Нужно это как-то отслеживать
         }
 
         [HttpGet]
@@ -128,18 +153,17 @@ namespace FcCupApi.Controllers
         public async Task<IActionResult> GetComments(int forumId, int? parentCommentId, int pageNumber = 1, int pageSize = 10)
         {
             var query = _context.Comments
-                                .Where(c => c.ForumId == forumId && c.IsDeleted == false);
+                .Where(c => c.ForumId == forumId && c.IsDeleted == false);
 
-            if (parentCommentId.HasValue)
-                query = query.Where(c => c.CommentId == parentCommentId.Value);
-            else
-                query = query.Where(c => c.CommentId == null);
+            query = parentCommentId.HasValue ? 
+                query.Where(c => c.CommentId == parentCommentId.Value) 
+                : query.Where(c => c.CommentId == null);
 
             var comments = await query
-                                .OrderBy(c => c.PublishedDateTime)
-                                .Skip((pageNumber - 1) * pageSize)
-                                .Take(pageSize)
-                                .ToListAsync();
+                .OrderBy(c => c.PublishedDateTime)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             return Ok(comments);
         }
@@ -150,11 +174,11 @@ namespace FcCupApi.Controllers
         public async Task<IActionResult> GetReplies(int parentCommentId, int pageNumber = 1, int pageSize = 10)
         {
             var replies = await _context.Comments
-                                        .Where(c => c.CommentId == parentCommentId && c.IsDeleted == false)
-                                        .OrderBy(c => c.PublishedDateTime)
-                                        .Skip((pageNumber - 1) * pageSize)
-                                        .Take(pageSize)
-                                        .ToListAsync();
+                .Where(c => c.CommentId == parentCommentId && c.IsDeleted == false)
+                .OrderBy(c => c.PublishedDateTime)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             return Ok(replies);
         }

@@ -1,12 +1,8 @@
 using FcCupApi.Contexts;
-using FcCupApi.Helpers;
 using FcCupApi.Services;
 using FcCupApi.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
-using MySql.Data.EntityFramework;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
@@ -14,12 +10,9 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 using mailService.Configuration;
 using mailService.Services;
-using FcCupApi.Providers;
 
 
 var builder = WebApplication.CreateBuilder(args);
-
-//builder.Services.AddAutoMapper(typeof(UserProfile));
 
 builder.Services.AddDbContext<FcCupDbContext>(options => 
     options.UseMySql(
