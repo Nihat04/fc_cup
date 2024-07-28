@@ -1,7 +1,8 @@
-import React from "react";
-import styles from "./Header.module.css";
 import globalStyles from "../../App.module.css";
+import styles from "./Header.module.css";
+
 import logo from "../../assets/svg/logo.svg";
+
 import { Link } from "react-router-dom";
 
 const Header = () => {
@@ -25,6 +26,10 @@ const Header = () => {
         {
             label: "Статистика",
             link: "/stats",
+        },
+        {
+            label: "Форум",
+            link: "/forum",
         },
     ];
 
