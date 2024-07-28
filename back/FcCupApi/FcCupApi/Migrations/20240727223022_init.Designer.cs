@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace FcCupApi.Migrations.UsersDb
+namespace FcCupApi.Migrations
 {
-    [DbContext(typeof(UsersDbContext))]
-    [Migration("20240702160033_addUser")]
-    partial class addUser
+    [DbContext(typeof(FcCupDbContext))]
+    [Migration("20240727223022_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,21 +34,15 @@ namespace FcCupApi.Migrations.UsersDb
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("LogoUrl")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(255)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Club");
+                    b.ToTable("Clubs");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.FootballerCard", b =>
@@ -92,6 +86,9 @@ namespace FcCupApi.Migrations.UsersDb
                     b.Property<int>("OverallRating")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TimeLineId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ClubId");
@@ -106,24 +103,40 @@ namespace FcCupApi.Migrations.UsersDb
 
                     b.HasIndex("LineupId4");
 
-                    b.ToTable("FootballerCard");
+                    b.HasIndex("TimeLineId");
+
+                    b.ToTable("FootballerCards");
                 });
 
-            modelBuilder.Entity("FcCupApi.Models.Forum", b =>
+            modelBuilder.Entity("FcCupApi.Models.GroupStagePlayer", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("Draws")
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    b.Property<int>("Goals")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<int>("Loses")
+                        .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<int>("MissedGoals")
+                        .HasColumnType("int");
 
-                    b.ToTable("Forums");
+                    b.Property<int>("PlayedGames")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Points")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TournamentPlayerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Wins")
+                        .HasColumnType("int");
+
+                    b.HasIndex("TournamentPlayerId");
+
+                    b.ToTable("GroupStagePlayers");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.Lineup", b =>
@@ -149,7 +162,7 @@ namespace FcCupApi.Migrations.UsersDb
 
                     b.HasIndex("MatchId");
 
-                    b.ToTable("Lineup");
+                    b.ToTable("Lineups");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.Match", b =>
@@ -190,7 +203,7 @@ namespace FcCupApi.Migrations.UsersDb
 
                     b.HasIndex("TournamentId");
 
-                    b.ToTable("Match");
+                    b.ToTable("Matches");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.Player", b =>
@@ -202,25 +215,18 @@ namespace FcCupApi.Migrations.UsersDb
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Links")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(255)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Player");
+                    b.ToTable("Players");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.Stage", b =>
@@ -231,6 +237,11 @@ namespace FcCupApi.Migrations.UsersDb
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("varchar(13)");
+
                     b.Property<int>("TournamentId")
                         .HasColumnType("int");
 
@@ -238,7 +249,39 @@ namespace FcCupApi.Migrations.UsersDb
 
                     b.HasIndex("TournamentId");
 
-                    b.ToTable("Stage");
+                    b.ToTable("Stages");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Stage");
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("FcCupApi.Models.Statistic<FcCupApi.Models.Club>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("StatisticGroupId")
+                        .HasColumnType("int")
+                        .HasColumnName("StatisticGroup<Club>Id");
+
+                    b.Property<int?>("TargetId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StatisticGroupId");
+
+                    b.HasIndex("TargetId");
+
+                    b.ToTable("ClubsStats");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.Statistic<FcCupApi.Models.FootballerCard>", b =>
@@ -271,7 +314,7 @@ namespace FcCupApi.Migrations.UsersDb
 
                     b.HasIndex("TargetId");
 
-                    b.ToTable("Statistic<FootballerCard>");
+                    b.ToTable("FootballersStats");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.Statistic<FcCupApi.Models.Player>", b =>
@@ -286,6 +329,10 @@ namespace FcCupApi.Migrations.UsersDb
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("StatisticGroupId")
+                        .HasColumnType("int")
+                        .HasColumnName("StatisticGroup<Player>Id");
+
                     b.Property<int?>("TargetId")
                         .HasColumnType("int");
 
@@ -294,11 +341,13 @@ namespace FcCupApi.Migrations.UsersDb
 
                     b.HasKey("Id");
 
+                    b.HasIndex("StatisticGroupId");
+
                     b.HasIndex("TargetId");
 
                     b.HasIndex("TournamentPlayerId");
 
-                    b.ToTable("Statistic<Player>");
+                    b.ToTable("PlayersStats");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.Statistic<FcCupApi.Models.TournamentPlayer>", b =>
@@ -338,6 +387,23 @@ namespace FcCupApi.Migrations.UsersDb
                     b.UseTphMappingStrategy();
                 });
 
+            modelBuilder.Entity("FcCupApi.Models.StatisticGroup<FcCupApi.Models.Club>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ClubsGroupStats");
+                });
+
             modelBuilder.Entity("FcCupApi.Models.StatisticGroup<FcCupApi.Models.FootballerCard>", b =>
                 {
                     b.Property<int>("Id")
@@ -367,7 +433,24 @@ namespace FcCupApi.Migrations.UsersDb
 
                     b.HasIndex("MatchId");
 
-                    b.ToTable("StatisticGroup<FootballerCard>");
+                    b.ToTable("FootballersGruopStats");
+                });
+
+            modelBuilder.Entity("FcCupApi.Models.StatisticGroup<FcCupApi.Models.Player>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PlayersGroupStats");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.StatisticGroup<FcCupApi.Models.TournamentPlayer>", b =>
@@ -392,7 +475,7 @@ namespace FcCupApi.Migrations.UsersDb
                     b.ToTable("StatisticGroup<TournamentPlayer>");
                 });
 
-            modelBuilder.Entity("FcCupApi.Models.SubComment", b =>
+            modelBuilder.Entity("FcCupApi.Models.TimeLine", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -400,36 +483,25 @@ namespace FcCupApi.Migrations.UsersDb
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CommentId")
+                    b.Property<int>("FootballerId")
                         .HasColumnType("int");
 
-                    b.Property<string>("CommentText")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<int>("Minute")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("varchar(13)");
+                    b.Property<int>("PlayerId")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime>("PublishedDateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("Rating")
+                    b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CommentId");
+                    b.HasIndex("FootballerId");
 
-                    b.ToTable("SubComment");
+                    b.HasIndex("PlayerId");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("SubComment");
-
-                    b.UseTphMappingStrategy();
+                    b.ToTable("TimeLines");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.Tournament", b =>
@@ -440,15 +512,20 @@ namespace FcCupApi.Migrations.UsersDb
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("BannerImage")
+                        .HasColumnType("longtext");
+
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PrizePool")
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("StartDate")
@@ -456,7 +533,7 @@ namespace FcCupApi.Migrations.UsersDb
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tournament");
+                    b.ToTable("Tournaments");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.TournamentPlayer", b =>
@@ -467,10 +544,13 @@ namespace FcCupApi.Migrations.UsersDb
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClubId")
+                    b.Property<int?>("ClubId")
                         .HasColumnType("int");
 
                     b.Property<int>("PlayerId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PlayoffStageId")
                         .HasColumnType("int");
 
                     b.Property<int>("TournamentId")
@@ -482,221 +562,29 @@ namespace FcCupApi.Migrations.UsersDb
 
                     b.HasIndex("PlayerId");
 
+                    b.HasIndex("PlayoffStageId");
+
                     b.HasIndex("TournamentId");
 
-                    b.ToTable("TournamentPlayer");
+                    b.ToTable("TournamentPlayers");
                 });
 
-            modelBuilder.Entity("FcCupApi.Models.User", b =>
+            modelBuilder.Entity("FcCupApi.Models.GroupStage", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CommunityStatus")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int?>("FavouriteClubId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("FavouritePlayerId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime>("RegistrationDateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FavouriteClubId");
-
-                    b.HasIndex("FavouritePlayerId");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex");
-
-                    b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("longtext");
+                    b.HasBaseType("FcCupApi.Models.Stage");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex");
-
-                    b.ToTable("AspNetRoles", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("RoleId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetRoleClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClaimType")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.HasDiscriminator().HasValue("GroupStage");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("FcCupApi.Models.PlayoffStage", b =>
                 {
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("varchar(255)");
+                    b.HasBaseType("FcCupApi.Models.Stage");
 
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("LoginProvider", "ProviderKey");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserLogins", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("UserId", "LoginProvider", "Name");
-
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.HasDiscriminator().HasValue("PlayoffStage");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.CompareStatistic<FcCupApi.Models.TournamentPlayer>", b =>
@@ -714,31 +602,6 @@ namespace FcCupApi.Migrations.UsersDb
                     b.HasIndex("SecondTargetId");
 
                     b.HasDiscriminator().HasValue("CompareStatistic<TournamentPlayer>");
-                });
-
-            modelBuilder.Entity("FcCupApi.Models.Comment", b =>
-                {
-                    b.HasBaseType("FcCupApi.Models.SubComment");
-
-                    b.Property<string>("AuthorId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<int?>("ForumId")
-                        .HasColumnType("int");
-
-                    b.HasIndex("AuthorId");
-
-                    b.HasIndex("ForumId");
-
-                    b.HasDiscriminator().HasValue("Comment");
-                });
-
-            modelBuilder.Entity("FcCupApi.Models.Club", b =>
-                {
-                    b.HasOne("FcCupApi.Models.User", null)
-                        .WithMany("FollowedClubs")
-                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.FootballerCard", b =>
@@ -769,7 +632,22 @@ namespace FcCupApi.Migrations.UsersDb
                         .WithMany("UpperMidfield")
                         .HasForeignKey("LineupId4");
 
+                    b.HasOne("FcCupApi.Models.TimeLine", null)
+                        .WithMany("OtherFootballers")
+                        .HasForeignKey("TimeLineId");
+
                     b.Navigation("Club");
+                });
+
+            modelBuilder.Entity("FcCupApi.Models.GroupStagePlayer", b =>
+                {
+                    b.HasOne("FcCupApi.Models.TournamentPlayer", "TournamentPlayer")
+                        .WithMany()
+                        .HasForeignKey("TournamentPlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TournamentPlayer");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.Lineup", b =>
@@ -822,13 +700,6 @@ namespace FcCupApi.Migrations.UsersDb
                     b.Navigation("Stage");
                 });
 
-            modelBuilder.Entity("FcCupApi.Models.Player", b =>
-                {
-                    b.HasOne("FcCupApi.Models.User", null)
-                        .WithMany("FollowedPlayers")
-                        .HasForeignKey("UserId");
-                });
-
             modelBuilder.Entity("FcCupApi.Models.Stage", b =>
                 {
                     b.HasOne("FcCupApi.Models.Tournament", "Tournament")
@@ -838,6 +709,19 @@ namespace FcCupApi.Migrations.UsersDb
                         .IsRequired();
 
                     b.Navigation("Tournament");
+                });
+
+            modelBuilder.Entity("FcCupApi.Models.Statistic<FcCupApi.Models.Club>", b =>
+                {
+                    b.HasOne("FcCupApi.Models.StatisticGroup<FcCupApi.Models.Club>", null)
+                        .WithMany("Stats")
+                        .HasForeignKey("StatisticGroupId");
+
+                    b.HasOne("FcCupApi.Models.Club", "Target")
+                        .WithMany()
+                        .HasForeignKey("TargetId");
+
+                    b.Navigation("Target");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.Statistic<FcCupApi.Models.FootballerCard>", b =>
@@ -859,6 +743,10 @@ namespace FcCupApi.Migrations.UsersDb
 
             modelBuilder.Entity("FcCupApi.Models.Statistic<FcCupApi.Models.Player>", b =>
                 {
+                    b.HasOne("FcCupApi.Models.StatisticGroup<FcCupApi.Models.Player>", null)
+                        .WithMany("Stats")
+                        .HasForeignKey("StatisticGroupId");
+
                     b.HasOne("FcCupApi.Models.Player", "Target")
                         .WithMany("Stats")
                         .HasForeignKey("TargetId");
@@ -905,26 +793,40 @@ namespace FcCupApi.Migrations.UsersDb
                         .HasForeignKey("TournamentId");
                 });
 
-            modelBuilder.Entity("FcCupApi.Models.SubComment", b =>
+            modelBuilder.Entity("FcCupApi.Models.TimeLine", b =>
                 {
-                    b.HasOne("FcCupApi.Models.Comment", null)
-                        .WithMany("SubComments")
-                        .HasForeignKey("CommentId");
+                    b.HasOne("FcCupApi.Models.FootballerCard", "Footballer")
+                        .WithMany()
+                        .HasForeignKey("FootballerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FcCupApi.Models.Player", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Footballer");
+
+                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.TournamentPlayer", b =>
                 {
                     b.HasOne("FcCupApi.Models.Club", "Club")
                         .WithMany("Tournaments")
-                        .HasForeignKey("ClubId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ClubId");
 
                     b.HasOne("FcCupApi.Models.Player", "Player")
                         .WithMany("Tournaments")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("FcCupApi.Models.PlayoffStage", null)
+                        .WithMany("TournamentPlayers")
+                        .HasForeignKey("PlayoffStageId");
 
                     b.HasOne("FcCupApi.Models.Tournament", "Tournament")
                         .WithMany("Players")
@@ -939,72 +841,6 @@ namespace FcCupApi.Migrations.UsersDb
                     b.Navigation("Tournament");
                 });
 
-            modelBuilder.Entity("FcCupApi.Models.User", b =>
-                {
-                    b.HasOne("FcCupApi.Models.Club", "FavouriteClub")
-                        .WithMany()
-                        .HasForeignKey("FavouriteClubId");
-
-                    b.HasOne("FcCupApi.Models.Player", "FavouritePlayer")
-                        .WithMany()
-                        .HasForeignKey("FavouritePlayerId");
-
-                    b.Navigation("FavouriteClub");
-
-                    b.Navigation("FavouritePlayer");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.HasOne("FcCupApi.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.HasOne("FcCupApi.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FcCupApi.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.HasOne("FcCupApi.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("FcCupApi.Models.CompareStatistic<FcCupApi.Models.TournamentPlayer>", b =>
                 {
                     b.HasOne("FcCupApi.Models.Match", null)
@@ -1016,21 +852,6 @@ namespace FcCupApi.Migrations.UsersDb
                         .HasForeignKey("SecondTargetId");
 
                     b.Navigation("SecondTarget");
-                });
-
-            modelBuilder.Entity("FcCupApi.Models.Comment", b =>
-                {
-                    b.HasOne("FcCupApi.Models.User", "Author")
-                        .WithMany("Comments")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FcCupApi.Models.Forum", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("ForumId");
-
-                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.Club", b =>
@@ -1047,11 +868,6 @@ namespace FcCupApi.Migrations.UsersDb
             modelBuilder.Entity("FcCupApi.Models.FootballerCard", b =>
                 {
                     b.Navigation("Stats");
-                });
-
-            modelBuilder.Entity("FcCupApi.Models.Forum", b =>
-                {
-                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.Lineup", b =>
@@ -1083,7 +899,17 @@ namespace FcCupApi.Migrations.UsersDb
                     b.Navigation("Tournaments");
                 });
 
+            modelBuilder.Entity("FcCupApi.Models.StatisticGroup<FcCupApi.Models.Club>", b =>
+                {
+                    b.Navigation("Stats");
+                });
+
             modelBuilder.Entity("FcCupApi.Models.StatisticGroup<FcCupApi.Models.FootballerCard>", b =>
+                {
+                    b.Navigation("Stats");
+                });
+
+            modelBuilder.Entity("FcCupApi.Models.StatisticGroup<FcCupApi.Models.Player>", b =>
                 {
                     b.Navigation("Stats");
                 });
@@ -1091,6 +917,11 @@ namespace FcCupApi.Migrations.UsersDb
             modelBuilder.Entity("FcCupApi.Models.StatisticGroup<FcCupApi.Models.TournamentPlayer>", b =>
                 {
                     b.Navigation("Stats");
+                });
+
+            modelBuilder.Entity("FcCupApi.Models.TimeLine", b =>
+                {
+                    b.Navigation("OtherFootballers");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.Tournament", b =>
@@ -1109,18 +940,9 @@ namespace FcCupApi.Migrations.UsersDb
                     b.Navigation("PlayerStats");
                 });
 
-            modelBuilder.Entity("FcCupApi.Models.User", b =>
+            modelBuilder.Entity("FcCupApi.Models.PlayoffStage", b =>
                 {
-                    b.Navigation("Comments");
-
-                    b.Navigation("FollowedClubs");
-
-                    b.Navigation("FollowedPlayers");
-                });
-
-            modelBuilder.Entity("FcCupApi.Models.Comment", b =>
-                {
-                    b.Navigation("SubComments");
+                    b.Navigation("TournamentPlayers");
                 });
 #pragma warning restore 612, 618
         }

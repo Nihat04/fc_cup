@@ -83,8 +83,6 @@ namespace FcCupApi.Controllers
             {
                 Name = player.Name,
                 ImageUrl = player.ImageUrl,
-                Tournaments = new List<TournamentPlayer>(),
-                Stats = new List<Statistic<Player>>(),
                 Links = player.Links
             };
 

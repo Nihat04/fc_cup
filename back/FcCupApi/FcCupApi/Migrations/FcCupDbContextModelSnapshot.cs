@@ -31,7 +31,6 @@ namespace FcCupApi.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("LogoUrl")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
@@ -213,11 +212,9 @@ namespace FcCupApi.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Links")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
@@ -512,15 +509,20 @@ namespace FcCupApi.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("BannerImage")
+                        .HasColumnType("longtext");
+
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PrizePool")
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("StartDate")
@@ -539,7 +541,7 @@ namespace FcCupApi.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClubId")
+                    b.Property<int?>("ClubId")
                         .HasColumnType("int");
 
                     b.Property<int>("PlayerId")
@@ -811,9 +813,7 @@ namespace FcCupApi.Migrations
                 {
                     b.HasOne("FcCupApi.Models.Club", "Club")
                         .WithMany("Tournaments")
-                        .HasForeignKey("ClubId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ClubId");
 
                     b.HasOne("FcCupApi.Models.Player", "Player")
                         .WithMany("Tournaments")

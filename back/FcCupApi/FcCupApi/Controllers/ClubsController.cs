@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FcCupApi.Contexts;
 using FcCupApi.Models;
+using FcCupApi.DTO;
 
 namespace FcCupApi.Controllers
 {
@@ -76,12 +77,14 @@ namespace FcCupApi.Controllers
         // POST: api/Clubs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Club>> PostClub(Club club)
+        public async Task<ActionResult<Club>> PostClub(ClubDTO club)
         {
-            _context.Clubs.Add(club);
+            var newClub = new Club { Name = club.Name, LogoUrl = club.LogoUrl };
+
+            _context.Clubs.Add(newClub);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetClub", new { id = club.Id }, club);
+            return CreatedAtAction("GetClub", new { id = newClub.Id }, newClub);
         }
 
         // DELETE: api/Clubs/5

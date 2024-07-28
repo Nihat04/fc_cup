@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FcCupApi.Contexts;
 using FcCupApi.Models;
 using FcCupApi.DBO;
+using FcCupApi.DTO;
 
 namespace FcCupApi.Controllers
 {
@@ -72,12 +73,14 @@ namespace FcCupApi.Controllers
         }
 
         [HttpPost]
-        private async Task<ActionResult<Tournament>> PostTournament(Tournament tournament)
+        public async Task<ActionResult<Tournament>> PostTournament(TournamentDTO tournament)
         {
-            _context.Tournaments.Add(tournament);
+            var newTournament = new Tournament { Name = tournament.Name, ImageUrl = tournament.ImageUrl, BannerImage = tournament.BannerImage, StartDate = tournament.StartDate, EndDate = tournament.EndDate };
+
+            _context.Tournaments.Add(newTournament);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTournament", new { id = tournament.Id }, tournament);
+            return CreatedAtAction("GetTournament", new { id = newTournament.Id }, newTournament);
         }
 
         // DELETE: api/Tournaments/5
@@ -99,6 +102,58 @@ namespace FcCupApi.Controllers
         private bool TournamentExists(int id)
         {
             return _context.Tournaments.Any(e => e.Id == id);
+        }
+
+        [HttpPost("{id}@playerId={playerId}&clubId={clubId}")]
+        public async Task<ActionResult<Tournament>> PostTournamentPlayer(int id, int playerId, int clubId)
+        {
+            var tournament = await _context.Tournaments.FindAsync(id);
+
+            if (tournament == null)
+            {
+                return NotFound("Tournament doesn't exist");
+            }
+
+            var player = await _context.Players.FindAsync(playerId);
+
+            if (player == null) 
+            {
+                return NotFound("Player doesn't exist");
+            }
+
+            var club = await _context.Clubs.FindAsync(clubId);
+
+            if(club == null)
+            {
+                return NotFound("Club doesn't exist");
+            }
+
+            if (tournament.Players == null)
+            {
+                tournament.Players = new List<TournamentPlayer>();
+            }
+
+            if (player.Tournaments == null)
+            {
+                player.Tournaments = new List<TournamentPlayer>();
+            }
+
+            if( club.Tournaments == null)
+            {
+                club.Tournaments = new List<TournamentPlayer>();
+            }
+
+            var newTournamentPlayer = new TournamentPlayer() { Player = player, Tournament = tournament, Club = club };
+            var tournamentPlayer = _context.TournamentPlayers.Add(newTournamentPlayer);
+            await _context.SaveChangesAsync();
+
+            tournament.Players.Add(tournamentPlayer.Entity);
+            player.Tournaments.Add(tournamentPlayer.Entity);
+            club.Tournaments.Add(tournamentPlayer.Entity);
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
     }
 }

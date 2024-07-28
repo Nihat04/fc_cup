@@ -23,7 +23,7 @@ namespace FcCupApi.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    LogoUrl = table.Column<string>(type: "longtext", nullable: false)
+                    LogoUrl = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -55,9 +55,9 @@ namespace FcCupApi.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ImageUrl = table.Column<string>(type: "longtext", nullable: false)
+                    ImageUrl = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Links = table.Column<string>(type: "longtext", nullable: false)
+                    Links = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -89,10 +89,14 @@ namespace FcCupApi.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ImageUrl = table.Column<string>(type: "longtext", nullable: false)
+                    ImageUrl = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    BannerImage = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     StartDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    EndDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    PrizePool = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
@@ -180,7 +184,7 @@ namespace FcCupApi.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     PlayerId = table.Column<int>(type: "int", nullable: false),
                     TournamentId = table.Column<int>(type: "int", nullable: false),
-                    ClubId = table.Column<int>(type: "int", nullable: false),
+                    ClubId = table.Column<int>(type: "int", nullable: true),
                     PlayoffStageId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -190,8 +194,7 @@ namespace FcCupApi.Migrations
                         name: "FK_TournamentPlayers_Clubs_ClubId",
                         column: x => x.ClubId,
                         principalTable: "Clubs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TournamentPlayers_Players_PlayerId",
                         column: x => x.PlayerId,
