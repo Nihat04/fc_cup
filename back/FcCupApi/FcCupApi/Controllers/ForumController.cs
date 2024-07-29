@@ -44,9 +44,22 @@ namespace FcCupApi.Controllers
         [Route("create-forum")]
         public async Task<IActionResult> CreateForum(string title)
         {
-            await _context.AddAsync<Forum>(new Forum() { Title = title });
+            await _context.AddAsync<Forum>(new Forum() { Title = title, PublishedDateTime = DateTime.UtcNow });
             _context.SaveChanges();
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("get-forums")]
+        public async Task<IActionResult> GetForums(int pageNumber = 1, int pageSize = 10)
+        {
+            var forums = await _context.Forums
+                .OrderBy(c => c.PublishedDateTime)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return Ok(forums);
         }
 
 
@@ -67,6 +80,10 @@ namespace FcCupApi.Controllers
 
             if (user == null)
                 return BadRequest("Invalid user");
+
+            var parrentComment = await _context.FindAsync<Comment>(parrentCommentId);
+            if (parrentComment == null)
+                return BadRequest("Invalid parrent comment Id");
 
             var comment = new Comment() 
             {

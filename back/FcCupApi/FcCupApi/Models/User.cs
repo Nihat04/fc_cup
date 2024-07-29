@@ -7,9 +7,6 @@ namespace FcCupApi.Models
     {
         public string? RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
-        //public string? Email {  get; set; }
-        //public string? UserName { get; set; }
-        public string? Password { get; set; }
         public DateTime RegistrationDateTime { get; set; }
         public List<Comment>? Comments { get ; set; }
         public Club? FavouriteClub { get; set; }
@@ -17,8 +14,8 @@ namespace FcCupApi.Models
         public List<Club>? FollowedClubs {  get; set; }
         public List<Player>? FollowedPlayers { get; set; }
         public Status? CommunityStatus { get; set; }
-        public DateTime CreatedAt { get; set; }
-        // rating 
+        public string DisplayName { get; set; }
+        public string AvatarUrl { get; set; }
     }
 
     public enum Status

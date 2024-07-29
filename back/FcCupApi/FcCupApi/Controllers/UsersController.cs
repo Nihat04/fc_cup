@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using mailService.Services;
 using mailService.Models;
+using System.ComponentModel;
 
 namespace FcCupApi.Controllers
 {
@@ -87,10 +88,12 @@ namespace FcCupApi.Controllers
             var user = new User
             {
                 Email = request.Email,
-                UserName = request.Email
+                UserName = request.Email,
+                RegistrationDateTime = DateTime.UtcNow,
+                DisplayName = request.DisplayName
             };
-            var result = await _userManager.CreateAsync(user, request.Password);
 
+            var result = await _userManager.CreateAsync(user, request.Password);
             foreach (var error in result.Errors)
                 ModelState.AddModelError(string.Empty, error.Description);
 
@@ -99,7 +102,6 @@ namespace FcCupApi.Controllers
 
             var findUser = await _context.Users
                 .FirstOrDefaultAsync(x => x.Email == request.Email);
-
             if (findUser == null) 
                 throw new Exception($"User with email: {request.Email} not found");
 
@@ -224,6 +226,26 @@ namespace FcCupApi.Controllers
                 return Ok("Email has been confirmed!");
             else
                 return NotFound();
+        }
+
+
+        [HttpGet]
+        [Route("user-info")]
+        [Authorize]
+        public async Task<IActionResult> GetShortUserInfo()
+        {
+            var username = User.Identity!.Name;
+            var user = await _userManager.FindByEmailAsync(username);
+            if (user == null)
+                return BadRequest("User not found");
+
+            return new ObjectResult(new
+            {
+                Id = user.Id!,
+                UserName = user.UserName!,
+                DisplayName = user.DisplayName!,
+                RegistrationDateTime = user.RegistrationDateTime!,
+            });
         }
     }
 }
