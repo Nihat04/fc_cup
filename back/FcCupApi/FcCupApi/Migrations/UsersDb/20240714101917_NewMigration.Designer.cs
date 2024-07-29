@@ -4,6 +4,7 @@ using FcCupApi.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FcCupApi.Migrations.UsersDb
 {
     [DbContext(typeof(UsersDbContext))]
-    partial class UsersDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240714101917_NewMigration")]
+    partial class NewMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,70 +49,6 @@ namespace FcCupApi.Migrations.UsersDb
                     b.HasIndex("UserId");
 
                     b.ToTable("Club");
-                });
-
-            modelBuilder.Entity("FcCupApi.Models.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<long>("AuthorId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int?>("CommentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CommentText")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("ForumId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime>("PublishedDateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ForumId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("FcCupApi.Models.CommentRating", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CommentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Rate")
-                        .HasColumnType("int");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CommentRatings");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.FootballerCard", b =>
@@ -453,6 +392,46 @@ namespace FcCupApi.Migrations.UsersDb
                     b.ToTable("StatisticGroup<TournamentPlayer>");
                 });
 
+            modelBuilder.Entity("FcCupApi.Models.SubComment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CommentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CommentText")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("varchar(13)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("PublishedDateTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
+
+                    b.ToTable("SubComment");
+
+                    b.HasDiscriminator().HasValue("SubComment");
+
+                    b.UseTphMappingStrategy();
+                });
+
             modelBuilder.Entity("FcCupApi.Models.Tournament", b =>
                 {
                     b.Property<int>("Id")
@@ -752,23 +731,27 @@ namespace FcCupApi.Migrations.UsersDb
                     b.HasDiscriminator().HasValue("CompareStatistic<TournamentPlayer>");
                 });
 
+            modelBuilder.Entity("FcCupApi.Models.Comment", b =>
+                {
+                    b.HasBaseType("FcCupApi.Models.SubComment");
+
+                    b.Property<long>("AuthorId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int?>("ForumId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("ForumId");
+
+                    b.HasDiscriminator().HasValue("Comment");
+                });
+
             modelBuilder.Entity("FcCupApi.Models.Club", b =>
                 {
                     b.HasOne("FcCupApi.Models.User", null)
                         .WithMany("FollowedClubs")
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("FcCupApi.Models.Comment", b =>
-                {
-                    b.HasOne("FcCupApi.Models.Forum", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("ForumId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FcCupApi.Models.User", null)
-                        .WithMany("Comments")
                         .HasForeignKey("UserId");
                 });
 
@@ -936,6 +919,13 @@ namespace FcCupApi.Migrations.UsersDb
                         .HasForeignKey("TournamentId");
                 });
 
+            modelBuilder.Entity("FcCupApi.Models.SubComment", b =>
+                {
+                    b.HasOne("FcCupApi.Models.Comment", null)
+                        .WithMany("SubComments")
+                        .HasForeignKey("CommentId");
+                });
+
             modelBuilder.Entity("FcCupApi.Models.TournamentPlayer", b =>
                 {
                     b.HasOne("FcCupApi.Models.Club", "Club")
@@ -1042,6 +1032,21 @@ namespace FcCupApi.Migrations.UsersDb
                     b.Navigation("SecondTarget");
                 });
 
+            modelBuilder.Entity("FcCupApi.Models.Comment", b =>
+                {
+                    b.HasOne("FcCupApi.Models.User", "Author")
+                        .WithMany("Comments")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FcCupApi.Models.Forum", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("ForumId");
+
+                    b.Navigation("Author");
+                });
+
             modelBuilder.Entity("FcCupApi.Models.Club", b =>
                 {
                     b.Navigation("FootballersStats");
@@ -1125,6 +1130,11 @@ namespace FcCupApi.Migrations.UsersDb
                     b.Navigation("FollowedClubs");
 
                     b.Navigation("FollowedPlayers");
+                });
+
+            modelBuilder.Entity("FcCupApi.Models.Comment", b =>
+                {
+                    b.Navigation("SubComments");
                 });
 #pragma warning restore 612, 618
         }

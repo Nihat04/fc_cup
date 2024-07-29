@@ -4,6 +4,7 @@ using FcCupApi.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FcCupApi.Migrations.UsersDb
 {
     [DbContext(typeof(UsersDbContext))]
-    partial class UsersDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240709203555_MigrationAuthTools2")]
+    partial class MigrationAuthTools2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,78 +41,14 @@ namespace FcCupApi.Migrations.UsersDb
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<long?>("UserId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Club");
-                });
-
-            modelBuilder.Entity("FcCupApi.Models.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<long>("AuthorId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int?>("CommentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CommentText")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("ForumId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime>("PublishedDateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ForumId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("FcCupApi.Models.CommentRating", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CommentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Rate")
-                        .HasColumnType("int");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CommentRatings");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.FootballerCard", b =>
@@ -274,8 +213,8 @@ namespace FcCupApi.Migrations.UsersDb
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<long?>("UserId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -453,6 +392,46 @@ namespace FcCupApi.Migrations.UsersDb
                     b.ToTable("StatisticGroup<TournamentPlayer>");
                 });
 
+            modelBuilder.Entity("FcCupApi.Models.SubComment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CommentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CommentText")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("varchar(13)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("PublishedDateTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
+
+                    b.ToTable("SubComment");
+
+                    b.HasDiscriminator().HasValue("SubComment");
+
+                    b.UseTphMappingStrategy();
+                });
+
             modelBuilder.Entity("FcCupApi.Models.Tournament", b =>
                 {
                     b.Property<int>("Id")
@@ -510,11 +489,8 @@ namespace FcCupApi.Migrations.UsersDb
 
             modelBuilder.Entity("FcCupApi.Models.User", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -526,10 +502,8 @@ namespace FcCupApi.Migrations.UsersDb
                         .IsConcurrencyToken()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
 
@@ -557,6 +531,7 @@ namespace FcCupApi.Migrations.UsersDb
                         .HasColumnType("varchar(256)");
 
                     b.Property<string>("Password")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("PasswordHash")
@@ -568,12 +543,6 @@ namespace FcCupApi.Migrations.UsersDb
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("RefreshTokenExpiryTime")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<DateTime>("RegistrationDateTime")
                         .HasColumnType("datetime(6)");
 
@@ -584,6 +553,7 @@ namespace FcCupApi.Migrations.UsersDb
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
 
@@ -603,13 +573,10 @@ namespace FcCupApi.Migrations.UsersDb
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<long>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -632,7 +599,7 @@ namespace FcCupApi.Migrations.UsersDb
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -646,8 +613,9 @@ namespace FcCupApi.Migrations.UsersDb
                     b.Property<string>("ClaimValue")
                         .HasColumnType("longtext");
 
-                    b.Property<long>("RoleId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -656,7 +624,7 @@ namespace FcCupApi.Migrations.UsersDb
                     b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<long>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -670,8 +638,9 @@ namespace FcCupApi.Migrations.UsersDb
                     b.Property<string>("ClaimValue")
                         .HasColumnType("longtext");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -680,7 +649,7 @@ namespace FcCupApi.Migrations.UsersDb
                     b.ToTable("AspNetUserClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<long>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("varchar(255)");
@@ -691,8 +660,9 @@ namespace FcCupApi.Migrations.UsersDb
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("longtext");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -701,13 +671,13 @@ namespace FcCupApi.Migrations.UsersDb
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<long>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
 
-                    b.Property<long>("RoleId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("RoleId")
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -716,10 +686,10 @@ namespace FcCupApi.Migrations.UsersDb
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("varchar(255)");
@@ -752,23 +722,28 @@ namespace FcCupApi.Migrations.UsersDb
                     b.HasDiscriminator().HasValue("CompareStatistic<TournamentPlayer>");
                 });
 
+            modelBuilder.Entity("FcCupApi.Models.Comment", b =>
+                {
+                    b.HasBaseType("FcCupApi.Models.SubComment");
+
+                    b.Property<string>("AuthorId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int?>("ForumId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("ForumId");
+
+                    b.HasDiscriminator().HasValue("Comment");
+                });
+
             modelBuilder.Entity("FcCupApi.Models.Club", b =>
                 {
                     b.HasOne("FcCupApi.Models.User", null)
                         .WithMany("FollowedClubs")
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("FcCupApi.Models.Comment", b =>
-                {
-                    b.HasOne("FcCupApi.Models.Forum", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("ForumId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FcCupApi.Models.User", null)
-                        .WithMany("Comments")
                         .HasForeignKey("UserId");
                 });
 
@@ -936,6 +911,13 @@ namespace FcCupApi.Migrations.UsersDb
                         .HasForeignKey("TournamentId");
                 });
 
+            modelBuilder.Entity("FcCupApi.Models.SubComment", b =>
+                {
+                    b.HasOne("FcCupApi.Models.Comment", null)
+                        .WithMany("SubComments")
+                        .HasForeignKey("CommentId");
+                });
+
             modelBuilder.Entity("FcCupApi.Models.TournamentPlayer", b =>
                 {
                     b.HasOne("FcCupApi.Models.Club", "Club")
@@ -978,16 +960,16 @@ namespace FcCupApi.Migrations.UsersDb
                     b.Navigation("FavouritePlayer");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<long>", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<long>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.HasOne("FcCupApi.Models.User", null)
                         .WithMany()
@@ -996,7 +978,7 @@ namespace FcCupApi.Migrations.UsersDb
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<long>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.HasOne("FcCupApi.Models.User", null)
                         .WithMany()
@@ -1005,9 +987,9 @@ namespace FcCupApi.Migrations.UsersDb
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<long>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<long>", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1020,7 +1002,7 @@ namespace FcCupApi.Migrations.UsersDb
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.HasOne("FcCupApi.Models.User", null)
                         .WithMany()
@@ -1040,6 +1022,21 @@ namespace FcCupApi.Migrations.UsersDb
                         .HasForeignKey("SecondTargetId");
 
                     b.Navigation("SecondTarget");
+                });
+
+            modelBuilder.Entity("FcCupApi.Models.Comment", b =>
+                {
+                    b.HasOne("FcCupApi.Models.User", "Author")
+                        .WithMany("Comments")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FcCupApi.Models.Forum", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("ForumId");
+
+                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("FcCupApi.Models.Club", b =>
@@ -1125,6 +1122,11 @@ namespace FcCupApi.Migrations.UsersDb
                     b.Navigation("FollowedClubs");
 
                     b.Navigation("FollowedPlayers");
+                });
+
+            modelBuilder.Entity("FcCupApi.Models.Comment", b =>
+                {
+                    b.Navigation("SubComments");
                 });
 #pragma warning restore 612, 618
         }
