@@ -55,12 +55,18 @@ const Header = () => {
                         ))}
                     </ul>
                 </nav>
-                <div className={styles["header__search--wrapper"]}>
+                <div className={styles["header__right"]}>
                     <input
-                        className={styles["header__search__input"]}
+                        className={styles["header__right__search-input"]}
                         type="text"
                         placeholder="Искать..."
                     />
+                    <div className={styles["header__right__auths"]}>
+                        <span className={styles["header__right__auth__input"]}>
+                            <a href="/auth">Войти</a> |{" "}
+                            <a href="/register">Регистрация</a>
+                        </span>
+                    </div>
                 </div>
             </div>
         </header>

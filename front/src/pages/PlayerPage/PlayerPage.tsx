@@ -1,10 +1,13 @@
+import globalStyles from "../../App.module.css";
+import style from "./PlayerPage.module.css";
+
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getPlayer } from "../../api/playerApi";
-import style from "./PlayerPage.module.css";
-import globalStyles from "../../App.module.css";
+
 import ObjectOverview from "../../components/ObjectOverview/ObjectOverview";
 import InformationPanel from "../../components/InformationPanel/InformationPanel";
+import Header from "../../components/Header/Header";
 
 const PlayerPage = () => {
     const { id } = useParams();
@@ -13,10 +16,15 @@ const PlayerPage = () => {
     const tabs = [
         {
             name: "Основное",
-            informations: [{
-                name: "статистика",
-                information: [{ name: "Сыграно матчей", score: "198" }, {name: "GAY", score: "neGay"}],
-            }],
+            informations: [
+                {
+                    name: "статистика",
+                    information: [
+                        { name: "Сыграно матчей", score: "198" },
+                        { name: "GAY", score: "neGay" },
+                    ],
+                },
+            ],
         },
         {
             name: "Комнады",
@@ -39,12 +47,17 @@ const PlayerPage = () => {
     }, []);
 
     return (
-        <section className={style["player"]}>
-            <div className={globalStyles["container"]}>
-                <ObjectOverview object={player} />
-                <InformationPanel tabs={tabs} />
-            </div>
-        </section>
+        <>
+            <Header />
+            <main>
+                <section className={style["player"]}>
+                    <div className={globalStyles["container"]}>
+                        <ObjectOverview object={player} />
+                        <InformationPanel tabs={tabs} />
+                    </div>
+                </section>
+            </main>
+        </>
     );
 };
 

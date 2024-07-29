@@ -1,0 +1,54 @@
+@import url('../../index.module.css');
+
+.login-form {
+    display: flex;
+    margin: auto;
+    margin-top: 200px;
+    padding: 30px 0;
+    max-width: 500px;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--island-color);
+    border-radius: 15px;
+}
+
+.login-form__header {
+    margin-bottom: 40px;
+}
+
+.login-form__inputs {
+    display: flex;
+    margin-bottom: 40px;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.login-form__input {
+    padding: 5px 15px;
+    border: none;
+    border-radius: 15px;
+}
+
+.login-form__btns {
+    margin-bottom: 20px;
+}
+
+.login-form__btn {
+    padding: 10px 20px;
+    background: none;
+    border: 2px solid var(--main-color);
+    border-radius: 15px;
+    transition: all 150ms;
+}
+
+.login-form__btn:hover {
+    background: var(--main-color);  
+    transition: all 150ms;
+}
+
+.login-form__bottom-links {
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    gap: 5px;
+}

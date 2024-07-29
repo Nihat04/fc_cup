@@ -23,7 +23,12 @@
     gap: 40px
 }
 
-.header__search__input {
+.header__right {
+    display:  flex;
+    gap: 5px;
+}
+
+.header__right__search-input {
     padding: 2px 10px;
     color: #fff;
     font-size: 15px;
@@ -33,4 +38,9 @@
     background-image: url("../../assets/svg/search-icon.svg");
     background-repeat: no-repeat;
     background-position: calc(100% - 10px) center;
+}
+
+.header__right__auth__input {
+    font-size: 10px;
+    color: #999;
 }
