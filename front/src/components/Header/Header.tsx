@@ -8,10 +8,6 @@ import { Link } from "react-router-dom";
 const Header = () => {
     const navLinks = [
         {
-            label: "Новости",
-            link: "/news",
-        },
-        {
             label: "Матчи",
             link: "/matches",
         },

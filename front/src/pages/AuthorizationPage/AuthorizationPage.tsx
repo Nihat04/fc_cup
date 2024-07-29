@@ -3,21 +3,26 @@ import styles from "./AuthorizationPage.module.css";
 import axios from "axios";
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AuthorizationPage = () => {
     const [authorizationData, setAuthorizationData] = useState({});
+    const navigate = useNavigate();
 
     const updateAuthoriazationData = (propertyName: string, value: string) => {
         setAuthorizationData({ ...authorizationData, [propertyName]: value });
     };
 
     const authorize = async () => {
-        const responseData = await axios
+        await axios
             .post("https://localhost:7295/accounts/login", authorizationData)
-            .then((res) => res.data);
+            .then((response) => response.data)
+            .then((data) => {
+                localStorage.setItem("tkId", data.token);
+                localStorage.setItem("tkIdRc", data.refreshToken);
+            });
 
-        localStorage.setItem("tkId", responseData.token);
-        localStorage.setItem("tkIdRc", responseData.refreshToken);
+        navigate(-1);
     };
 
     return (
@@ -58,9 +63,11 @@ const AuthorizationPage = () => {
                         Войти
                     </button>
                 </div>
-                <div className={styles['login-form__bottom-links']}>
-                    <p>Забыли пароль? <a href="#">Восстановить</a></p>
-                    <a href="#">Создать аккаунт</a>
+                <div className={styles["login-form__bottom-links"]}>
+                    <p>
+                        Забыли пароль? <a href="#">Восстановить</a>
+                    </p>
+                    <a href="/register">Создать аккаунт</a>
                 </div>
             </div>
         </>

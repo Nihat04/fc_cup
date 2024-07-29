@@ -2,28 +2,45 @@ import styles from "../AuthorizationPage.module.css";
 
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const RegistrationPage = () => {
     const [registrationData, setRegistrationData] = useState({});
+    const navigate = useNavigate();
 
     const updateAuthoriazationData = (propertyName: string, value: string) => {
         setRegistrationData({ ...registrationData, [propertyName]: value });
     };
 
     const register = async () => {
-        const responseData = await axios
+        await axios
             .post("https://localhost:7295/accounts/register", registrationData)
-            .then((res) => res.data);
+            .then((response) => response.data)
+            .then((data) => {
+                localStorage.setItem("tkId", data.token);
+                localStorage.setItem("tkIdRc", data.refreshToken);
+            });
 
-        localStorage.setItem("tkId", responseData.token);
-        localStorage.setItem("tkIdRc", responseData.refreshToken);
+        navigate(-1);
     };
 
     return (
         <>
             <div className={styles["login-form"]}>
-                <h2 className={styles["login-form__header"]}>АВТОРИЗАЦИЯ</h2>
+                <h2 className={styles["login-form__header"]}>РЕГИСТРАЦИЯ</h2>
                 <div className={styles["login-form__inputs"]}>
+                    <input
+                        className={styles["login-form__input"]}
+                        type="text"
+                        placeholder="Никнейм"
+                        name="diplayName"
+                        onChange={(e) =>
+                            updateAuthoriazationData(
+                                e.target.name,
+                                e.target.value
+                            )
+                        }
+                    />
                     <input
                         className={styles["login-form__input"]}
                         type="text"
@@ -66,7 +83,7 @@ const RegistrationPage = () => {
                         className={styles["login-form__btn"]}
                         onClick={() => register()}
                     >
-                        Войти
+                        Создать
                     </button>
                 </div>
             </div>
