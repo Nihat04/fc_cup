@@ -232,7 +232,7 @@ namespace FcCupApi.Controllers
         [HttpGet]
         [Route("user-info")]
         [Authorize]
-        public async Task<IActionResult> GetShortUserInfo()
+        public async Task<IActionResult> GetUserInfo()
         {
             var username = User.Identity!.Name;
             var user = await _userManager.FindByEmailAsync(username);
@@ -246,6 +246,14 @@ namespace FcCupApi.Controllers
                 DisplayName = user.DisplayName!,
                 RegistrationDateTime = user.RegistrationDateTime!,
             });
+        }
+
+        [HttpGet]
+        [Route("profile")]
+        [Authorize]
+        public async Task<IActionResult> GetUserProfile()
+        {
+            return Ok("Not implemented yet");
         }
     }
 }

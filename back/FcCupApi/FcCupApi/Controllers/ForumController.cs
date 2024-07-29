@@ -44,7 +44,18 @@ namespace FcCupApi.Controllers
         [Route("create-forum")]
         public async Task<IActionResult> CreateForum(string title)
         {
-            await _context.AddAsync<Forum>(new Forum() { Title = title, PublishedDateTime = DateTime.UtcNow });
+            var username = User.Identity!.Name;
+            var user = await _userManager.FindByNameAsync(username!);
+
+            if (user == null)
+                return BadRequest("User not found");
+
+            await _context.AddAsync<Forum>(new Forum() { 
+                Title = title, 
+                PublishedDateTime = DateTime.UtcNow, 
+                AuthorDisplayName = user.DisplayName, 
+                NumberOfComments = 0 });
+
             _context.SaveChanges();
             return Ok();
         }
@@ -96,7 +107,8 @@ namespace FcCupApi.Controllers
                 CommentId = parrentCommentId
             };
 
-            await _context.AddAsync(comment);
+            var res = await _context.AddAsync(comment);
+            forum.NumberOfComments++;
             await _context.SaveChangesAsync();
 
             return Ok();
@@ -166,7 +178,7 @@ namespace FcCupApi.Controllers
         }
 
         [HttpGet]
-        [Route("get-comments")]
+        [Route("${forumId}")]
         public async Task<IActionResult> GetComments(int forumId, int? parentCommentId, int pageNumber = 1, int pageSize = 10)
         {
             var query = _context.Comments
