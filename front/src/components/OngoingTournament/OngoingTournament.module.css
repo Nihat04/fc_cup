@@ -1,0 +1,34 @@
+.ongoing-tournament__header {
+    margin-bottom: 10px;
+}
+
+.ongoing-tournament__panel {
+    position: relative;
+    width: 100%;
+    min-height: 350px;
+    overflow: hidden;
+    background-image: url("../../assets/img/kfbg.jpg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.ongoing-tournament__panel__name {
+    display: inline-block;
+    padding: 20px;
+    font-size: 20px;
+    font-weight: 700;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 0 0 15px 0;
+}
+
+.ongoing-tournament__panel__info {
+    position: absolute;
+    padding: 15px;
+    min-width: 300px;
+    height: 100%;
+    top: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+}
