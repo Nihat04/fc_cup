@@ -258,8 +258,10 @@ namespace FcCupApi.Controllers
             if (user == null)
                 return BadRequest("User not found");
 
-            var userRatingFromComments = _context.Comments
-                .Where(x => x.AuthorId == user.Id)
+            var userComments = _context.Comments
+                .Where(x => x.AuthorId == user.Id);
+
+            var userRatingFromComments = userComments
                 .Select(x => x.Rating)
                 .Sum();
 
@@ -269,7 +271,8 @@ namespace FcCupApi.Controllers
                 UserName = user.UserName!,
                 DisplayName = user.DisplayName!,
                 RegistrationDateTime = user.RegistrationDateTime!,
-                Rating = userRatingFromComments
+                Rating = userRatingFromComments,
+                UserComments = userComments
             });
         }
     }

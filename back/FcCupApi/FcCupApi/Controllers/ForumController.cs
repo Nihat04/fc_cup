@@ -92,9 +92,12 @@ namespace FcCupApi.Controllers
             if (user == null)
                 return BadRequest("Invalid user");
 
-            var parrentComment = await _context.FindAsync<Comment>(parrentCommentId);
-            if (parrentComment == null)
-                return BadRequest("Invalid parrent comment Id");
+            if (parrentCommentId != null)
+            {
+                var parrentComment = await _context.FindAsync<Comment>(parrentCommentId);
+                if (parrentComment == null)
+                    return BadRequest("Invalid parrent comment Id");
+            }
 
             var comment = new Comment() 
             {
