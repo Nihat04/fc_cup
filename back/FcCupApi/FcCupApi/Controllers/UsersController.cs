@@ -253,7 +253,24 @@ namespace FcCupApi.Controllers
         [Authorize]
         public async Task<IActionResult> GetUserProfile()
         {
-            return Ok("Not implemented yet");
+            var username = User.Identity!.Name;
+            var user = await _userManager.FindByEmailAsync(username);
+            if (user == null)
+                return BadRequest("User not found");
+
+            var userRatingFromComments = _context.Comments
+                .Where(x => x.AuthorId == user.Id)
+                .Select(x => x.Rating)
+                .Sum();
+
+            return new ObjectResult(new
+            {
+                Id = user.Id!,
+                UserName = user.UserName!,
+                DisplayName = user.DisplayName!,
+                RegistrationDateTime = user.RegistrationDateTime!,
+                Rating = userRatingFromComments
+            });
         }
     }
 }
