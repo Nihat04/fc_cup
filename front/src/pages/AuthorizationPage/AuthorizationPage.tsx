@@ -1,9 +1,9 @@
-import styles from "./AuthorizationPage.module.css";
+import styles from './AuthorizationPage.module.css';
 
-import axios from "axios";
+import axios from 'axios';
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AuthorizationPage = () => {
     const [authorizationData, setAuthorizationData] = useState({});
@@ -15,11 +15,11 @@ const AuthorizationPage = () => {
 
     const authorize = async () => {
         await axios
-            .post("https://localhost:7295/accounts/login", authorizationData)
+            .post('https://localhost:7295/accounts/login', authorizationData)
             .then((response) => response.data)
             .then((data) => {
-                localStorage.setItem("tkId", data.token);
-                localStorage.setItem("tkIdRc", data.refreshToken);
+                localStorage.setItem('tkId', data.token);
+                localStorage.setItem('tkIdRc', data.refreshToken);
             });
 
         navigate(-1);
@@ -27,11 +27,11 @@ const AuthorizationPage = () => {
 
     return (
         <>
-            <div className={styles["login-form"]}>
-                <h2 className={styles["login-form__header"]}>АВТОРИЗАЦИЯ</h2>
-                <div className={styles["login-form__inputs"]}>
+            <div className={styles['login-form']}>
+                <h2 className={styles['login-form__header']}>АВТОРИЗАЦИЯ</h2>
+                <div className={styles['login-form__inputs']}>
                     <input
-                        className={styles["login-form__input"]}
+                        className={styles['login-form__input']}
                         type="text"
                         placeholder="Почта"
                         name="email"
@@ -43,7 +43,7 @@ const AuthorizationPage = () => {
                         }
                     />
                     <input
-                        className={styles["login-form__input"]}
+                        className={styles['login-form__input']}
                         type="password"
                         placeholder="Пароль"
                         name="password"
@@ -55,15 +55,15 @@ const AuthorizationPage = () => {
                         }
                     />
                 </div>
-                <div className={styles["login-form__btns"]}>
+                <div className={styles['login-form__btns']}>
                     <button
-                        className={styles["login-form__btn"]}
+                        className={styles['login-form__btn']}
                         onClick={() => authorize()}
                     >
                         Войти
                     </button>
                 </div>
-                <div className={styles["login-form__bottom-links"]}>
+                <div className={styles['login-form__bottom-links']}>
                     <p>
                         Забыли пароль? <a href="#">Восстановить</a>
                     </p>

@@ -40,7 +40,28 @@
     background-position: calc(100% - 10px) center;
 }
 
-.header__right__auth__input {
+.header__right__user {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.header__right__user__username {
+    font-size: 15px;
+}
+
+.header__right__user__logout-btn {
+    padding: 0;
+    background: none;
+}
+
+.header__right__user__logout-btn__icon {
+    width: 20px;
+    aspect-ratio: 1;
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0) brightness(100%) contrast(100%);
+}
+
+.header__right__auth__links {
     font-size: 10px;
     color: #999;
 }

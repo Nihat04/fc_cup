@@ -1,20 +1,20 @@
-import React, { useState } from "react";
-import styles from "./InformationPanel.module.css";
-import classNames from "classnames";
+import React, { useState } from 'react';
+import styles from './InformationPanel.module.css';
+import classNames from 'classnames';
 
 const InformationPanel = (props) => {
     const { tabs } = props;
     const [currentTab, setCurrentTab] = useState(tabs[0]);
     return (
-        <div className={styles["information-panel"]}>
-            <div className={styles["information-panel__tabs"]}>
+        <div className={styles['information-panel']}>
+            <div className={styles['information-panel__tabs']}>
                 {tabs.map((tab, index) => (
                     <button
                         className={classNames(
-                            styles["information-panel__tabs__btn"],
+                            styles['information-panel__tabs__btn'],
                             {
                                 [styles[
-                                    "information-panel__tabs__btn--active"
+                                    'information-panel__tabs__btn--active'
                                 ]]: currentTab.name === tab.name,
                             }
                         )}
@@ -25,11 +25,11 @@ const InformationPanel = (props) => {
                     </button>
                 ))}
             </div>
-            <div className={styles["information-panel__information"]}>
+            <div className={styles['information-panel__information']}>
                 {currentTab.informations.map((infoGroup, groupIndex) => (
                     <div
                         className={
-                            styles["information-panel__information__group"]
+                            styles['information-panel__information__group']
                         }
                         key={groupIndex}
                     >
@@ -37,7 +37,7 @@ const InformationPanel = (props) => {
                         <div
                             className={
                                 styles[
-                                    "information-panel__information__group__plates"
+                                    'information-panel__information__group__plates'
                                 ]
                             }
                         >
@@ -45,7 +45,7 @@ const InformationPanel = (props) => {
                                 <div
                                     className={
                                         styles[
-                                            "information-panel__information__group__plate"
+                                            'information-panel__information__group__plate'
                                         ]
                                     }
                                     key={index}

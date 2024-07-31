@@ -1,14 +1,22 @@
-import axiosInstance from "./main";
+import axiosInstance from './main';
+
+export type forum = {
+    id: number;
+    title: string;
+    publishedDateTime: string;
+};
 
 export async function getForums() {
-    const response = await axiosInstance.get("forum/get-forums");
+    const response = await axiosInstance.get('forum/get-forums');
     const data = await response.data;
 
     return data;
 }
 
 export async function createForum(forumName: string) {
-    const response = await axiosInstance.post(`forum/create-forum?title=${forumName}`);
+    const response = await axiosInstance.post(
+        `forum/create-forum?title=${forumName}`
+    );
     const data = await response.data;
 
     return data;

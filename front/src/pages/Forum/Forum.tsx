@@ -1,31 +1,32 @@
-import globalStyles from "../../App.module.css";
-import styles from "./Forum.module.css";
+import globalStyles from '../../App.module.css';
+import styles from './Forum.module.css';
 
-import Header from "../../components/Header/Header";
+import Header from '../../components/Header/Header';
 
-import { useEffect, useRef, useState } from "react";
-import { getForums, createForum } from "../../api/forum";
-import { useNavigate } from "react-router-dom";
-import { isLoged } from "../../api/user";
-import classNames from "classnames";
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import classNames from 'classnames';
+import { useSelector } from 'react-redux';
+
+import { getForums, createForum } from '../../api/forum';
+import { RootState } from '../../store/store';
+import { forum as forumObject } from '../../api/forum';
 
 const Forum = () => {
-    const [newForumName, setNewForumName] = useState("");
-    const [loged, setLoged] = useState(false);
+    const [newForumName, setNewForumName] = useState('');
     const [forums, setForums] = useState([]);
     const navigate = useNavigate();
     const modalRef = useRef(null);
+    const userLoged = useSelector((state: RootState) => state.user.logedIn);
 
     useEffect(() => {
         getForums().then((res) => setForums(res));
-
-        isLoged().then((response) => setLoged(response));
     }, []);
 
-    async function createForumBtn(): void {
+    async function createForumBtn(): Promise<void> {
         await createForum(newForumName);
 
-        setNewForumName("");
+        setNewForumName('');
         modalRef.current.close();
     }
 
@@ -33,17 +34,17 @@ const Forum = () => {
         <>
             <Header />
             <main>
-                <div className={globalStyles["container"]}>
-                    <section className={styles["forum"]}>
-                        <div className={styles["forum__top"]}>
-                            <h1 className={styles["forum__top__header"]}>
+                <div className={globalStyles['container']}>
+                    <section className={styles['forum']}>
+                        <div className={styles['forum__top']}>
+                            <h1 className={styles['forum__top__header']}>
                                 Форум
                             </h1>
-                            {loged && (
+                            {userLoged && (
                                 <button
                                     className={classNames(
-                                        globalStyles["big-interaction-btn"],
-                                        styles["forum__top__create-btn"]
+                                        globalStyles['big-interaction-btn'],
+                                        styles['forum__top__create-btn']
                                     )}
                                     onClick={() => modalRef.current.showModal()}
                                 >
@@ -51,28 +52,28 @@ const Forum = () => {
                                 </button>
                             )}
                         </div>
-                        <ul className={styles["forum__threads"]}>
-                            {forums.map((forumEl) => (
+                        <ul className={styles['forum__threads']}>
+                            {forums.map((forumEl: forumObject) => (
                                 <li
                                     key={forumEl.id}
-                                    className={styles["forum__thread"]}
+                                    className={styles['forum__thread']}
                                     onClick={() => navigate(`./${forumEl.id}`)}
                                 >
                                     <p
                                         className={
-                                            styles["forum__thread__title"]
+                                            styles['forum__thread__title']
                                         }
                                     >
                                         {forumEl.title}
                                     </p>
                                     <p
                                         className={
-                                            styles["forum__thread__small-info"]
+                                            styles['forum__thread__small-info']
                                         }
                                     >
                                         {
                                             forumEl.publishedDateTime.split(
-                                                "T"
+                                                'T'
                                             )[0]
                                         }
                                     </p>
@@ -83,7 +84,7 @@ const Forum = () => {
                 </div>
             </main>
             <dialog
-                className={classNames(globalStyles["modal"], styles["modal"])}
+                className={classNames(globalStyles['modal'], styles['modal'])}
                 ref={modalRef}
                 onClick={(e) => {
                     const rect = e.target.getBoundingClientRect();
@@ -98,18 +99,18 @@ const Forum = () => {
                     }
                 }}
             >
-                <div className={styles["modal__container"]}>
+                <div className={styles['modal__container']}>
                     <h3>Саздание треда</h3>
                     <input
-                        className={styles["modal__input"]}
+                        className={styles['modal__input']}
                         type="text"
                         placeholder="Название"
                         onChange={(e) => setNewForumName(e.target.value)}
                     />
                     <button
                         className={classNames(
-                            globalStyles["big-interaction-btn"],
-                            styles["modal__btn"]
+                            globalStyles['big-interaction-btn'],
+                            styles['modal__btn']
                         )}
                         onClick={() => createForumBtn()}
                     >
