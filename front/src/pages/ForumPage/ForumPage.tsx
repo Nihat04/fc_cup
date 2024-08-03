@@ -1,5 +1,5 @@
 import globalStyles from '../../App.module.css';
-import styles from './Forum.module.css';
+import styles from './ForumPage.module.css';
 
 import Header from '../../components/Header/Header';
 
@@ -43,7 +43,7 @@ const Forum = () => {
                             {userLoged && (
                                 <button
                                     className={classNames(
-                                        globalStyles['big-interaction-btn'],
+                                        globalStyles['big-btn'],
                                         styles['forum__top__create-btn']
                                     )}
                                     onClick={() => modalRef.current.showModal()}
@@ -109,7 +109,7 @@ const Forum = () => {
                     />
                     <button
                         className={classNames(
-                            globalStyles['big-interaction-btn'],
+                            globalStyles['big-btn'],
                             styles['modal__btn']
                         )}
                         onClick={() => createForumBtn()}

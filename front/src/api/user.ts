@@ -11,7 +11,7 @@ export type user = {
 
 export async function getLogedUser(): Promise<user> {
     try {
-        const response = await axiosInstance.get(`accounts/user-info`);
+        const response = await axiosInstance.get(`accounts/profile`);
         const data = await response.data;
 
         return data;

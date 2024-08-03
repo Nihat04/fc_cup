@@ -12,7 +12,8 @@ import PlayerPage from './pages/PlayerPage/PlayerPage';
 import MainPage from './pages/MainPage/MainPage';
 import AuthorizationPage from './pages/AuthorizationPage/AuthorizationPage';
 import RegistrationPage from './pages/AuthorizationPage/RegistrationPage/RegistrationPage';
-import Forum from './pages/Forum/Forum';
+import ForumPage from './pages/ForumPage/ForumPage';
+import ForumItemPage from './pages/ForumItemPage/ForumItemPage';
 import UserPage from './pages/UserPage/UserPage';
 
 type page = {
@@ -29,21 +30,18 @@ function App() {
         { path: '/register', pageComponent: <RegistrationPage /> },
     ];
 
-    const authorizedRoutes: page[] = [
-        { path: '/me', pageComponent: <UserPage /> },
-    ];
-
     const publicRoutes: page[] = [
         { path: '/', pageComponent: <MainPage /> },
         { path: '/player/:id/', pageComponent: <PlayerPage /> },
-        { path: '/forum', pageComponent: <Forum /> },
+        { path: '/forum', pageComponent: <ForumPage /> },
+        { path: '/forum/:id', pageComponent: <ForumItemPage /> },
         { path: '/user/:id', pageComponent: <UserPage /> },
     ];
 
     useEffect(() => {
         getLogedUser()
             .then((user) => dispatch(loginUser(user)))
-            .catch((err) => '');
+            .catch(() => '');
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -57,21 +55,14 @@ function App() {
                         element={route.pageComponent}
                     />
                 ))}
-                {isLogedIn
-                    ? authorizedRoutes.map((route, index) => (
-                          <Route
-                              key={index}
-                              path={route.path}
-                              element={route.pageComponent}
-                          />
-                      ))
-                    : unauthorizedRoutes.map((route, index) => (
-                          <Route
-                              key={index}
-                              path={route.path}
-                              element={route.pageComponent}
-                          />
-                      ))}
+                {!isLogedIn &&
+                    unauthorizedRoutes.map((route, index) => (
+                        <Route
+                            key={index}
+                            path={route.path}
+                            element={route.pageComponent}
+                        />
+                    ))}
                 <Route path="*" element={<Navigate to={'/'} replace />} />
             </Routes>
         </>

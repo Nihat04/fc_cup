@@ -13,6 +13,13 @@ export async function getForums() {
     return data;
 }
 
+export async function getForum(id: number) {
+    const response = await axiosInstance.get(`forum/\$${id}`);
+    const data = await response.data;
+
+    return data;
+}
+
 export async function createForum(forumName: string) {
     const response = await axiosInstance.post(
         `forum/create-forum?title=${forumName}`

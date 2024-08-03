@@ -74,13 +74,14 @@ const Header = () => {
                     />
                     {userLoged ? (
                         <div className={styles['header__right__user']}>
-                            <p
+                            <Link
+                                to={`/user/${user!.id}`}
                                 className={
                                     styles['header__right__user__username']
                                 }
                             >
                                 {user!.displayName}
-                            </p>
+                            </Link>
                             <button
                                 className={
                                     styles['header__right__user__logout-btn']
