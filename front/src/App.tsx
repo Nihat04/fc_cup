@@ -49,20 +49,10 @@ function App() {
         <>
             <Routes>
                 {publicRoutes.map((route, index) => (
-                    <Route
-                        key={index}
-                        path={route.path}
-                        element={route.pageComponent}
-                    />
+                    <Route key={index} path={route.path} element={route.pageComponent} />
                 ))}
                 {!isLogedIn &&
-                    unauthorizedRoutes.map((route, index) => (
-                        <Route
-                            key={index}
-                            path={route.path}
-                            element={route.pageComponent}
-                        />
-                    ))}
+                    unauthorizedRoutes.map((route, index) => <Route key={index} path={route.path} element={route.pageComponent} />)}
                 <Route path="*" element={<Navigate to={'/'} replace />} />
             </Routes>
         </>

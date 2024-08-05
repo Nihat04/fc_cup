@@ -37,15 +37,10 @@ const Forum = () => {
                 <div className={globalStyles['container']}>
                     <section className={styles['forum']}>
                         <div className={styles['forum__top']}>
-                            <h1 className={styles['forum__top__header']}>
-                                Форум
-                            </h1>
+                            <h1 className={styles['forum__top__header']}>Форум</h1>
                             {userLoged && (
                                 <button
-                                    className={classNames(
-                                        globalStyles['big-btn'],
-                                        styles['forum__top__create-btn']
-                                    )}
+                                    className={classNames(globalStyles['big-btn'], styles['forum__top__create-btn'])}
                                     onClick={() => modalRef.current.showModal()}
                                 >
                                     Создать
@@ -54,29 +49,27 @@ const Forum = () => {
                         </div>
                         <ul className={styles['forum__threads']}>
                             {forums.map((forumEl: forumObject) => (
-                                <li
-                                    key={forumEl.id}
-                                    className={styles['forum__thread']}
-                                    onClick={() => navigate(`./${forumEl.id}`)}
-                                >
-                                    <p
-                                        className={
-                                            styles['forum__thread__title']
-                                        }
-                                    >
-                                        {forumEl.title}
-                                    </p>
-                                    <p
-                                        className={
-                                            styles['forum__thread__small-info']
-                                        }
-                                    >
-                                        {
-                                            forumEl.publishedDateTime.split(
-                                                'T'
-                                            )[0]
-                                        }
-                                    </p>
+                                <li key={forumEl.id} className={styles['forum__thread']} onClick={() => navigate(`./${forumEl.id}`)}>
+                                    <div className={styles['']}>
+                                        <p className={styles['forum__thread__title']}>{forumEl.title}</p>
+                                        <p className={styles['forum__thread__author']}>
+                                            <span className={styles['forum__thread__author-prefix']}>by </span>
+                                            {forumEl.authorDisplayName}
+                                        </p>
+                                    </div>
+                                    <div className={styles['forum__thread__info']}>
+                                        <p
+                                            className={classNames(
+                                                styles['forum__thread__info__paragraph'],
+                                                styles['forum__thread__info__comments']
+                                            )}
+                                        >
+                                            {forumEl.numberOfComments}
+                                        </p>
+                                        <p className={styles['forum__thread__info__paragraph']}>
+                                            {forumEl.publishedDateTime.split('T')[0]}
+                                        </p>
+                                    </div>
                                 </li>
                             ))}
                         </ul>
@@ -89,12 +82,7 @@ const Forum = () => {
                 onClick={(e) => {
                     const rect = e.target.getBoundingClientRect();
 
-                    if (
-                        rect.left > e.clientX ||
-                        rect.right < e.clientX ||
-                        rect.top > e.clientY ||
-                        rect.bottom < e.clientY
-                    ) {
+                    if (rect.left > e.clientX || rect.right < e.clientX || rect.top > e.clientY || rect.bottom < e.clientY) {
                         e.target.close();
                     }
                 }}
@@ -107,13 +95,7 @@ const Forum = () => {
                         placeholder="Название"
                         onChange={(e) => setNewForumName(e.target.value)}
                     />
-                    <button
-                        className={classNames(
-                            globalStyles['big-btn'],
-                            styles['modal__btn']
-                        )}
-                        onClick={() => createForumBtn()}
-                    >
+                    <button className={classNames(globalStyles['big-btn'], styles['modal__btn'])} onClick={() => createForumBtn()}>
                         Создать
                     </button>
                 </div>

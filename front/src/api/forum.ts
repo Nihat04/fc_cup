@@ -3,7 +3,9 @@ import axiosInstance from './main';
 export type forum = {
     id: number;
     title: string;
+    authorDisplayName: string;
     publishedDateTime: string;
+    numberOfComments: string;
 };
 
 export async function getForums() {

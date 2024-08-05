@@ -13,6 +13,7 @@ export async function getLogedUser(): Promise<user> {
     try {
         const response = await axiosInstance.get(`accounts/profile`);
         const data = await response.data;
+        console.log(data)
 
         return data;
     } catch (error) {

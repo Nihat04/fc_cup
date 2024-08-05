@@ -51,7 +51,7 @@ const Header = () => {
                     <img
                         className={styles['header__logo']}
                         src={logo}
-                        alt="логотип кубка фиферов"
+                        alt="логотип"
                     />
                 </a>
                 <nav className={styles['haeder__nav']}>

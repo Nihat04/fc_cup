@@ -21,7 +21,7 @@ const UserPage = () => {
     useEffect(() => {
         if (isLogedUserPage) {
             setUser(logedUser);
-            console.log(logedUser)
+            console.log(logedUser);
             return;
         }
 
@@ -34,36 +34,25 @@ const UserPage = () => {
             <main className={globalStyles['container']}>
                 <section className={styles['user']}>
                     <div>
-                        <h2 className={styles['user__name']}>
-                            {user?.displayName}
-                        </h2>
-                        <p className={styles['user__rating']}>
-                            {`${user?.rating} очков рейтинга`}
-                        </p>
+                        <h2 className={styles['user__name']}>{user?.displayName}</h2>
+                        <div className={styles['user__data']}>
+                            <p className={styles['']}><strong>{user?.rating}</strong>{` очков рейтинга`}</p>
+                            <p className={styles['']}>{`дата регистрации: `}<b>{user?.registrationDateTime.split('T')[0]}</b></p>
+                        </div>
                     </div>
-                    <div>
-                        {isLogedUserPage && (
-                            <button className={globalStyles['btn']}>
-                                Редактировать
-                            </button>
-                        )}
-                    </div>
+                    <div>{isLogedUserPage && <button className={globalStyles['btn']}>Редактировать</button>}</div>
                 </section>
-                <section className={styles['user__comments']}>
-                    <h4>История комментариев</h4>
-                    <ul>
+                <section className={styles['user-comments']}>
+                    <h4 className={styles['user-comments__header']}>История комментариев</h4>
+                    <ul className={styles['user-comments__list']}>
                         {user?.userComments.map((comment: any) => (
-                            <Link  key={comment.id} to={`/forum/${comment.forumId}`}>
-                                <li>
-                                    <p>
-                                        {
-                                            comment.publishedDateTime.split(
-                                                'T'
-                                            )[0]
-                                        }
-                                    </p>
+                            <Link key={comment.id} to={`/forum/${comment.forumId}`}>
+                                <li className={styles['user-comments__item']}>
+                                    <div className={styles['user__comments__item__header']}>
+                                        <p>{comment.publishedDateTime.split('T')[0]}</p>
+                                        <p>{comment.rating}</p>
+                                    </div>
                                     <p>{comment.commentText}</p>
-                                    <p>{comment.rating}</p>
                                 </li>
                             </Link>
                         ))}

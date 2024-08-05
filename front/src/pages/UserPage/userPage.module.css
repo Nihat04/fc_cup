@@ -1,0 +1,43 @@
+@import url('../../index.module.css');
+
+.user {
+    display: flex;
+    margin-bottom: 50px;
+    justify-content: space-between;
+}
+
+.user__name {
+    margin-bottom: 20px;
+}
+
+.user__data {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* comments */
+
+.user-comments__header {
+    margin-bottom: 20px;
+}
+
+.user-comments__list {
+    list-style: none;
+}
+
+.user-comments__item {
+    display: flex;
+    padding: 20px;
+    flex-direction: column;
+    background-color: var(--island-color);
+    border-radius: 15px;
+    gap: 15px;
+}
+
+.user__comments__item__header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    opacity: 0.5;
+}

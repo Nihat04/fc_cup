@@ -1,3 +1,5 @@
+@import url("./index.module.css");
+
 .container {
   margin: auto;
   padding: 0 20px;
@@ -15,6 +17,17 @@
 .modal h3 {
   font-size: 24px;
   margin-bottom: 30px;
+}
+
+.btn {
+  padding: 5px 15px;
+  font-size: 12px;
+  background-color: var(--btn-default-color);
+  border-radius: 10px;
+}
+
+.btn:hover {
+  filter: brightness(90%);
 }
 
 .big-btn {
