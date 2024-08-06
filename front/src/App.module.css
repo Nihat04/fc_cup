@@ -1,6 +1,6 @@
 @import url("./index.module.css");
 
-.container {
+.main, .container {
   margin: auto;
   padding: 0 20px;
   max-width: 1100px;

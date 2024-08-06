@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 
 import { getForums, createForum } from '../../api/forum';
 import { RootState } from '../../store/store';
-import { forum as forumObject } from '../../api/forum';
+import { forumShort as forumObject } from '../../api/forum';
 
 const Forum = () => {
     const [newForumName, setNewForumName] = useState('');
@@ -33,8 +33,7 @@ const Forum = () => {
     return (
         <>
             <Header />
-            <main>
-                <div className={globalStyles['container']}>
+            <main className={globalStyles['main']}>
                     <section className={styles['forum']}>
                         <div className={styles['forum__top']}>
                             <h1 className={styles['forum__top__header']}>Форум</h1>
@@ -74,7 +73,6 @@ const Forum = () => {
                             ))}
                         </ul>
                     </section>
-                </div>
             </main>
             <dialog
                 className={classNames(globalStyles['modal'], styles['modal'])}
