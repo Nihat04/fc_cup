@@ -10,5 +10,6 @@ namespace FcCupApi.Models
         public DateTime PublishedDateTime { get; set; }
         public string AuthorDisplayName { get; set; }
         public int NumberOfComments { get; set; }
+        public string? Body {  get; set; }
     }
 }

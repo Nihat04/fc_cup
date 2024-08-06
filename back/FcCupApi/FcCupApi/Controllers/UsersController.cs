@@ -211,6 +211,7 @@ namespace FcCupApi.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        [Route("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
             if (userId == null || code == null)
@@ -269,6 +270,32 @@ namespace FcCupApi.Controllers
             {
                 Id = user.Id!,
                 UserName = user.UserName!,
+                DisplayName = user.DisplayName!,
+                RegistrationDateTime = user.RegistrationDateTime!,
+                Rating = userRatingFromComments,
+                UserComments = userComments
+            });
+        }
+
+        [HttpGet]
+        [Route("{userId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetUserProfile(long userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return BadRequest("User not found");
+
+            var userComments = _context.Comments
+                .Where(x => x.AuthorId == user.Id);
+
+            var userRatingFromComments = userComments
+                .Select(x => x.Rating)
+                .Sum();
+
+            return new ObjectResult(new
+            {
+                Id = user.Id!,
                 DisplayName = user.DisplayName!,
                 RegistrationDateTime = user.RegistrationDateTime!,
                 Rating = userRatingFromComments,

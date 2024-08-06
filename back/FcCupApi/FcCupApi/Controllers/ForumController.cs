@@ -42,7 +42,7 @@ namespace FcCupApi.Controllers
         [HttpPost]
         [Authorize]
         [Route("create-forum")]
-        public async Task<IActionResult> CreateForum(string title)
+        public async Task<IActionResult> CreateForum(string title, string? body)
         {
             var username = User.Identity!.Name;
             var user = await _userManager.FindByNameAsync(username!);
@@ -50,14 +50,15 @@ namespace FcCupApi.Controllers
             if (user == null)
                 return BadRequest("User not found");
 
-            await _context.AddAsync<Forum>(new Forum() { 
+            var newForum = await _context.AddAsync<Forum>(new Forum() { 
                 Title = title, 
                 PublishedDateTime = DateTime.UtcNow, 
                 AuthorDisplayName = user.DisplayName, 
-                NumberOfComments = 0 });
+                NumberOfComments = 0,
+                Body = body});
 
             _context.SaveChanges();
-            return Ok();
+            return Ok(newForum.Entity);
         }
 
         [HttpGet]
@@ -181,15 +182,11 @@ namespace FcCupApi.Controllers
         }
 
         [HttpGet]
-        [Route("${forumId}")]
-        public async Task<IActionResult> GetComments(int forumId, int? parentCommentId, int pageNumber = 1, int pageSize = 10)
+        [Route("${forumId}/comments")]
+        public async Task<IActionResult> GetComments(int forumId, int pageNumber = 1, int pageSize = 10)
         {
             var query = _context.Comments
                 .Where(c => c.ForumId == forumId && c.IsDeleted == false);
-
-            query = parentCommentId.HasValue ? 
-                query.Where(c => c.CommentId == parentCommentId.Value) 
-                : query.Where(c => c.CommentId == null);
 
             var comments = await query
                 .OrderBy(c => c.PublishedDateTime)
