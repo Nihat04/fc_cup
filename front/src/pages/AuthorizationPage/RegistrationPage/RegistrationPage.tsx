@@ -13,6 +13,11 @@ const RegistrationPage = () => {
     };
 
     const register = async () => {
+        if(registrationData.password !== registrationData.passwordConfirm) {
+            console.log('passwords are different')
+            return
+        }
+
         await axios
             .post('https://localhost:7295/accounts/register', registrationData)
             .then((response) => response.data)
@@ -26,7 +31,7 @@ const RegistrationPage = () => {
 
     return (
         <>
-            <div className={styles['login-form']}>
+            <form className={styles['login-form']}>
                 <h2 className={styles['login-form__header']}>РЕГИСТРАЦИЯ</h2>
                 <div className={styles['login-form__inputs']}>
                     <input
@@ -40,6 +45,7 @@ const RegistrationPage = () => {
                                 e.target.value
                             )
                         }
+                        required
                     />
                     <input
                         className={styles['login-form__input']}
@@ -52,6 +58,7 @@ const RegistrationPage = () => {
                                 e.target.value
                             )
                         }
+                        required
                     />
                     <input
                         className={styles['login-form__input']}
@@ -64,6 +71,7 @@ const RegistrationPage = () => {
                                 e.target.value
                             )
                         }
+                        required
                     />
                     <input
                         className={styles['login-form__input']}
@@ -76,6 +84,7 @@ const RegistrationPage = () => {
                                 e.target.value
                             )
                         }
+                        required
                     />
                 </div>
                 <div className={styles['login-form__btns']}>
@@ -86,7 +95,7 @@ const RegistrationPage = () => {
                         Создать
                     </button>
                 </div>
-            </div>
+            </form>
         </>
     );
 };

@@ -26,6 +26,10 @@ const ForumItemPage = () => {
                     <h3>{forumThread.commentText}</h3>
                 </section>
                 <section className={styles['forum-thread__comments']}>
+                    <form action="#">
+                        <input type="text" />
+                        <button>Прокомментировать</button>
+                    </form>
                     <ul></ul>
                 </section>
             </main>

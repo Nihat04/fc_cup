@@ -29,7 +29,7 @@ export async function getForums(): Promise<forum[]> {
 export async function getForum(id: number): Promise<forum> {
     const response = await axiosInstance.get(`forum/\$${id}`);
     const data = await response.data;
-
+    console.log(data)
     return data[0];
 }
 
