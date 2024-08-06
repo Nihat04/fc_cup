@@ -197,6 +197,16 @@ namespace FcCupApi.Controllers
             return Ok(comments);
         }
 
+        [HttpGet]
+        [Route("${forumId}")]
+        public async Task<IActionResult> GetForum(int forumId)
+        {
+            var forum = await _context.FindAsync<Forum>(forumId);
+            if (forum is null)
+                return NotFound("Requested forum doesnt exists");
+
+            return Ok(forum);
+        }
 
         [HttpGet]
         [Route("get-replies")]
