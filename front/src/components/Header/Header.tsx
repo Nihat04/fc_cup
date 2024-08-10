@@ -10,33 +10,33 @@ import { useDispatch, useSelector } from 'react-redux';
 
 type navigationLink = { label: string; link: string };
 
+const NAVIGATION_LINKS: navigationLink[] = [
+    {
+        label: 'Матчи',
+        link: '/matches',
+    },
+    {
+        label: 'Исходы',
+        link: '/results',
+    },
+    {
+        label: 'Турниры',
+        link: '/tournaments',
+    },
+    {
+        label: 'Статистика',
+        link: '/stats',
+    },
+    {
+        label: 'Форум',
+        link: '/forum',
+    },
+];
+
 const Header = () => {
     const userLoged = useSelector((state: RootState) => state.user.logedIn);
     const user = useSelector((state: RootState) => state.user.user);
     const dispatch = useDispatch();
-
-    const navLinks: navigationLink[] = [
-        {
-            label: 'Матчи',
-            link: '/matches',
-        },
-        {
-            label: 'Исходы',
-            link: '/results',
-        },
-        {
-            label: 'Турниры',
-            link: '/tournaments',
-        },
-        {
-            label: 'Статистика',
-            link: '/stats',
-        },
-        {
-            label: 'Форум',
-            link: '/forum',
-        },
-    ];
 
     const logout = () => {
         dispatch(logoutUser());
@@ -56,7 +56,7 @@ const Header = () => {
                 </a>
                 <nav className={styles['haeder__nav']}>
                     <ul className={styles['header__nav__list']}>
-                        {navLinks.map((navEl, index) => (
+                        {NAVIGATION_LINKS.map((navEl, index) => (
                             <li
                                 className={styles['header__nav__list__item']}
                                 key={index}

@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ScreenMessage, { messageTypes } from '../../components/ScreenMessage/ScreenMessage';
 
 const AuthorizationPage = () => {
     const [authorizationData, setAuthorizationData] = useState({});
@@ -70,6 +71,7 @@ const AuthorizationPage = () => {
                     <a href="/register">Создать аккаунт</a>
                 </div>
             </div>
+            <ScreenMessage type={messageTypes.error}>TEst</ScreenMessage>
         </>
     );
 };

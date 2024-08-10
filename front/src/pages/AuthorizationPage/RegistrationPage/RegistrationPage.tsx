@@ -5,17 +5,20 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const RegistrationPage = () => {
-    const [registrationData, setRegistrationData] = useState({});
+    const [registrationData, setRegistrationData] = useState({ firstName: '', lastName: '' });
     const navigate = useNavigate();
 
     const updateAuthoriazationData = (propertyName: string, value: string) => {
         setRegistrationData({ ...registrationData, [propertyName]: value });
     };
 
-    const register = async () => {
-        if(registrationData.password !== registrationData.passwordConfirm) {
-            console.log('passwords are different')
-            return
+    const register = async (e: React.FormEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        console.log(registrationData);
+
+        if (registrationData.password !== registrationData.passwordConfirm) {
+            console.log('passwords are different');
+            return;
         }
 
         await axios
@@ -38,13 +41,8 @@ const RegistrationPage = () => {
                         className={styles['login-form__input']}
                         type="text"
                         placeholder="Никнейм"
-                        name="diplayName"
-                        onChange={(e) =>
-                            updateAuthoriazationData(
-                                e.target.name,
-                                e.target.value
-                            )
-                        }
+                        name="displayName"
+                        onChange={(e) => updateAuthoriazationData(e.target.name, e.target.value)}
                         required
                     />
                     <input
@@ -52,12 +50,7 @@ const RegistrationPage = () => {
                         type="text"
                         placeholder="Почта"
                         name="email"
-                        onChange={(e) =>
-                            updateAuthoriazationData(
-                                e.target.name,
-                                e.target.value
-                            )
-                        }
+                        onChange={(e) => updateAuthoriazationData(e.target.name, e.target.value)}
                         required
                     />
                     <input
@@ -65,12 +58,7 @@ const RegistrationPage = () => {
                         type="password"
                         placeholder="Пароль"
                         name="password"
-                        onChange={(e) =>
-                            updateAuthoriazationData(
-                                e.target.name,
-                                e.target.value
-                            )
-                        }
+                        onChange={(e) => updateAuthoriazationData(e.target.name, e.target.value)}
                         required
                     />
                     <input
@@ -78,20 +66,12 @@ const RegistrationPage = () => {
                         type="password"
                         placeholder="Подтверждение Пароля"
                         name="passwordConfirm"
-                        onChange={(e) =>
-                            updateAuthoriazationData(
-                                e.target.name,
-                                e.target.value
-                            )
-                        }
+                        onChange={(e) => updateAuthoriazationData(e.target.name, e.target.value)}
                         required
                     />
                 </div>
                 <div className={styles['login-form__btns']}>
-                    <button
-                        className={styles['login-form__btn']}
-                        onClick={() => register()}
-                    >
+                    <button className={styles['login-form__btn']} onClick={(e) => register(e)}>
                         Создать
                     </button>
                 </div>
