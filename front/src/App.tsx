@@ -12,8 +12,8 @@ import PlayerPage from './pages/PlayerPage/PlayerPage';
 import MainPage from './pages/MainPage/MainPage';
 import AuthorizationPage from './pages/AuthorizationPage/AuthorizationPage';
 import RegistrationPage from './pages/AuthorizationPage/RegistrationPage/RegistrationPage';
-import ForumPage from './pages/ForumPage/ForumPage';
-import ForumItemPage from './pages/ForumItemPage/ForumItemPage';
+import ForumPage from './pages/ForumsPage/ForumsPage';
+import ForumItemPage from './pages/ForumPage/ForumPage';
 import UserPage from './pages/UserPage/UserPage';
 
 type page = {
@@ -42,7 +42,6 @@ function App() {
         getLogedUser()
             .then((user) => dispatch(loginUser(user)))
             .catch(() => '');
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

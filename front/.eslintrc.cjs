@@ -16,6 +16,6 @@ module.exports = {
       { allowConstantExport: true },
     ],
     'prettier/prettier': 'error',
-    'react-hooks/exhaustive-deps': false,
+    'react-hooks/exhaustive-deps': 'off',
   },
 }

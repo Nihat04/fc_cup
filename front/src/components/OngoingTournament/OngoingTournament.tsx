@@ -8,16 +8,10 @@ const OngoingTournament = () => {
     useEffect(() => {}, []);
     return (
         <section className={styles['ongoing-tournament']}>
-            <h3 className={styles['ongoing-tournament__header']}>
-                {HEADER_TEXT}
-            </h3>
+            <h3 className={styles['ongoing-tournament__header']}>{HEADER_TEXT}</h3>
             <div className={styles['ongoing-tournament__panel']}>
-                <div className={styles['ongoing-tournament__panel__name']}>
-                    {'Кубок Фиферов 2024'}
-                </div>
-                <div className={styles['ongoing-tournament__panel__info']}>
-                    dfhakiald
-                </div>
+                <div className={styles['ongoing-tournament__panel__name']}>{'Кубок Фиферов 2024'}</div>
+                <div className={styles['ongoing-tournament__panel__info']}>dfhakiald</div>
             </div>
         </section>
     );

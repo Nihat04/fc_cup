@@ -36,8 +36,14 @@ const UserPage = () => {
                     <div>
                         <h2 className={styles['user__name']}>{user?.displayName}</h2>
                         <div className={styles['user__data']}>
-                            <p className={styles['']}><strong>{user?.rating}</strong>{` очков рейтинга`}</p>
-                            <p className={styles['']}>{`дата регистрации: `}<b>{user?.registrationDateTime.split('T')[0]}</b></p>
+                            <p className={styles['']}>
+                                <strong>{user?.rating}</strong>
+                                {` очков рейтинга`}
+                            </p>
+                            <p className={styles['']}>
+                                {`дата регистрации: `}
+                                <b>{user?.registrationDateTime.split('T')[0]}</b>
+                            </p>
                         </div>
                     </div>
                     <div>{isLogedUserPage && <button className={globalStyles['btn']}>Редактировать</button>}</div>

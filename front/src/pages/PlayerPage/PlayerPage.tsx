@@ -44,7 +44,6 @@ const PlayerPage = () => {
 
     useEffect(() => {
         getPlayer(id).then((res) => setPlayer(res));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

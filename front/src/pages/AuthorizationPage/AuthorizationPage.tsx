@@ -36,31 +36,18 @@ const AuthorizationPage = () => {
                         type="text"
                         placeholder="Почта"
                         name="email"
-                        onChange={(e) =>
-                            updateAuthoriazationData(
-                                e.target.name,
-                                e.target.value
-                            )
-                        }
+                        onChange={(e) => updateAuthoriazationData(e.target.name, e.target.value)}
                     />
                     <input
                         className={styles['login-form__input']}
                         type="password"
                         placeholder="Пароль"
                         name="password"
-                        onChange={(e) =>
-                            updateAuthoriazationData(
-                                e.target.name,
-                                e.target.value
-                            )
-                        }
+                        onChange={(e) => updateAuthoriazationData(e.target.name, e.target.value)}
                     />
                 </div>
                 <div className={styles['login-form__btns']}>
-                    <button
-                        className={styles['login-form__btn']}
-                        onClick={() => authorize()}
-                    >
+                    <button className={styles['login-form__btn']} onClick={() => authorize()}>
                         Войти
                     </button>
                 </div>

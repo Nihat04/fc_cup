@@ -10,14 +10,9 @@ const InformationPanel = (props) => {
             <div className={styles['information-panel__tabs']}>
                 {tabs.map((tab, index) => (
                     <button
-                        className={classNames(
-                            styles['information-panel__tabs__btn'],
-                            {
-                                [styles[
-                                    'information-panel__tabs__btn--active'
-                                ]]: currentTab.name === tab.name,
-                            }
-                        )}
+                        className={classNames(styles['information-panel__tabs__btn'], {
+                            [styles['information-panel__tabs__btn--active']]: currentTab.name === tab.name,
+                        })}
                         key={index}
                         onClick={() => setCurrentTab(tab)}
                     >
@@ -27,29 +22,11 @@ const InformationPanel = (props) => {
             </div>
             <div className={styles['information-panel__information']}>
                 {currentTab.informations.map((infoGroup, groupIndex) => (
-                    <div
-                        className={
-                            styles['information-panel__information__group']
-                        }
-                        key={groupIndex}
-                    >
+                    <div className={styles['information-panel__information__group']} key={groupIndex}>
                         <h6>{infoGroup.name}</h6>
-                        <div
-                            className={
-                                styles[
-                                    'information-panel__information__group__plates'
-                                ]
-                            }
-                        >
+                        <div className={styles['information-panel__information__group__plates']}>
                             {infoGroup.information.map((info, index) => (
-                                <div
-                                    className={
-                                        styles[
-                                            'information-panel__information__group__plate'
-                                        ]
-                                    }
-                                    key={index}
-                                >
+                                <div className={styles['information-panel__information__group__plate']} key={index}>
                                     <p>{info.name}</p>
                                     <p>{info.score}</p>
                                 </div>

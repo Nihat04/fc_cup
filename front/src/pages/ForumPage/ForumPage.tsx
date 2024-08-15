@@ -1,105 +1,110 @@
 import globalStyles from '../../App.module.css';
 import styles from './ForumPage.module.css';
 
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+
+import { comment, DownVoteComment, getForum, getForumComments, postComment, upVoteComment } from '../../api/forum';
+import { forum } from '../../api/forum';
+
 import Header from '../../components/Header/Header';
-
-import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
 
-import { getForums, createForum } from '../../api/forum';
-import { RootState } from '../../store/store';
-import { forumShort as forumObject } from '../../api/forum';
+const ForumItemPage = () => {
+    const { id } = useParams();
 
-const Forum = () => {
-    const [newForumName, setNewForumName] = useState('');
-    const [forums, setForums] = useState([]);
-    const navigate = useNavigate();
-    const modalRef = useRef(null);
-    const userLoged = useSelector((state: RootState) => state.user.logedIn);
+    const [forumInfo, setForumInfo] = useState<forum>();
+    const [forumComment, setForumComment] = useState('');
+    const [forumComments, setForumComments] = useState<comment[]>([]);
+
+    const postCommentAction = async () => {
+        if (!forumComment) return;
+
+        await postComment({ forumId: forumInfo?.id, comment: forumComment });
+        await getForumComments(id, 1).then((res) => setForumComments(res));
+        setForumComment('');
+    };
+
+    const voteComment = async (voteFunc: Function, commentId: number) => {
+        await voteFunc(commentId);
+        await getForumComments(id, 1).then((res) => setForumComments(res));
+    };
 
     useEffect(() => {
-        getForums().then((res) => setForums(res));
+        getForum(id).then((res) => setForumInfo(res));
+        getForumComments(id, 1).then((res) => setForumComments(res));
     }, []);
-
-    async function createForumBtn(): Promise<void> {
-        await createForum(newForumName);
-
-        setNewForumName('');
-        modalRef.current.close();
-    }
 
     return (
         <>
             <Header />
             <main className={globalStyles['main']}>
-                    <section className={styles['forum']}>
-                        <div className={styles['forum__top']}>
-                            <h1 className={styles['forum__top__header']}>Форум</h1>
-                            {userLoged && (
-                                <button
-                                    className={classNames(globalStyles['big-btn'], styles['forum__top__create-btn'])}
-                                    onClick={() => modalRef.current.showModal()}
-                                >
-                                    Создать
-                                </button>
-                            )}
+                <section className={styles['forum']}>
+                    <div className={styles['forum__header']}>
+                        <div className={styles['forum__header__top']}>
+                            <p className={styles['forum__small-text']}>
+                                <b>{forumInfo?.authorDisplayName}</b>
+                            </p>
+                            <p className={styles['forum__small-text']}>{forumInfo?.publishedDateTime.split('T')[0]}</p>
                         </div>
-                        <ul className={styles['forum__threads']}>
-                            {forums.map((forumEl: forumObject) => (
-                                <li key={forumEl.id} className={styles['forum__thread']} onClick={() => navigate(`./${forumEl.id}`)}>
-                                    <div className={styles['']}>
-                                        <p className={styles['forum__thread__title']}>{forumEl.title}</p>
-                                        <p className={styles['forum__thread__author']}>
-                                            <span className={styles['forum__thread__author-prefix']}>by </span>
-                                            {forumEl.authorDisplayName}
-                                        </p>
+                        <h3 className={styles['forum__header__header']}>{forumInfo?.title}</h3>
+                    </div>
+                    <div className={styles['forum__body']}>{forumInfo?.body}</div>
+                </section>
+                <section className={styles['forum__comments']}>
+                    <div className={styles['forum__comments__top']}>
+                        <textarea
+                            className={styles['forum__comments__input']}
+                            placeholder="Комментарий"
+                            value={forumComment}
+                            onChange={(e) => setForumComment(e.target.value)}
+                        />
+                        <button
+                            className={classNames(styles['forum__comments__btn'], {
+                                [styles['forum__comments__btn-active:hover']]: forumComment,
+                                [styles['forum__comments__btn-disabled']]: !forumComment,
+                            })}
+                            onClick={() => postCommentAction()}
+                        >
+                            Прокомментировать
+                        </button>
+                    </div>
+                    <ul className={styles['forum__comments__list']}>
+                        {forumComments
+                            .sort((commentEl1, commentEl2) => commentEl2.rating - commentEl1.rating)
+                            .map((commentEl) => (
+                                <li className={styles['forum__comments__item']} key={commentEl.id}>
+                                    <div className={styles['forum__comments__item__top']}>
+                                        <p className={styles['forum__small-text']}>{commentEl.authorId}</p>
+                                        <p className={styles['forum__small-text']}>{commentEl.publishedDateTime.split('T')[0]}</p>
                                     </div>
-                                    <div className={styles['forum__thread__info']}>
-                                        <p
-                                            className={classNames(
-                                                styles['forum__thread__info__paragraph'],
-                                                styles['forum__thread__info__comments']
-                                            )}
-                                        >
-                                            {forumEl.numberOfComments}
-                                        </p>
-                                        <p className={styles['forum__thread__info__paragraph']}>
-                                            {forumEl.publishedDateTime.split('T')[0]}
-                                        </p>
+                                    <div className={styles['forum__comments__item__bottom']}>
+                                        <div className="">
+                                            <p className={styles['forum__comments__item__body']}>{commentEl.commentText}</p>
+                                            <button className={styles['forum__comments__item__btn']}>Показать ответы</button>
+                                        </div>
+                                        <div className={styles['forum__comments__item__vote']}>
+                                            <button
+                                                className={classNames(styles['forum__comments__item__vote__btn'])}
+                                                onClick={() => voteComment(upVoteComment, commentEl.id)}
+                                            ></button>
+                                            <p className={styles['forum__comments__item__vote__paragr']}>{commentEl.rating}</p>
+                                            <button
+                                                className={classNames(
+                                                    styles['forum__comments__item__vote__btn'],
+                                                    styles['forum__comments__item__vote__btn-down']
+                                                )}
+                                                onClick={() => voteComment(DownVoteComment, commentEl.id)}
+                                            ></button>
+                                        </div>
                                     </div>
                                 </li>
                             ))}
-                        </ul>
-                    </section>
+                    </ul>
+                </section>
             </main>
-            <dialog
-                className={classNames(globalStyles['modal'], styles['modal'])}
-                ref={modalRef}
-                onClick={(e) => {
-                    const rect = e.target.getBoundingClientRect();
-
-                    if (rect.left > e.clientX || rect.right < e.clientX || rect.top > e.clientY || rect.bottom < e.clientY) {
-                        e.target.close();
-                    }
-                }}
-            >
-                <div className={styles['modal__container']}>
-                    <h3>Саздание треда</h3>
-                    <input
-                        className={styles['modal__input']}
-                        type="text"
-                        placeholder="Название"
-                        onChange={(e) => setNewForumName(e.target.value)}
-                    />
-                    <button className={classNames(globalStyles['big-btn'], styles['modal__btn'])} onClick={() => createForumBtn()}>
-                        Создать
-                    </button>
-                </div>
-            </dialog>
         </>
     );
 };
 
-export default Forum;
+export default ForumItemPage;
