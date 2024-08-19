@@ -65,10 +65,10 @@ namespace FcCupApi.Controllers
         [Route("get-forums")]
         public async Task<IActionResult> GetForums(int pageNumber = 1, int pageSize = 10)
         {
-            var forums = await _context.Forums
-                .OrderBy(c => c.PublishedDateTime)
+            var forums = await _context.Forums  
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
+                .OrderBy(c => c.PublishedDateTime)
                 .ToListAsync();
 
             return Ok(forums);
@@ -182,7 +182,8 @@ namespace FcCupApi.Controllers
         }
 
         [HttpGet]
-        [Route("${forumId}/comments")]
+        [Route("{forumId}/comments")]
+        [AllowAnonymous] // Позволяет доступ к методу без аутентификации
         public async Task<IActionResult> GetComments(int forumId, int pageNumber = 1, int pageSize = 10)
         {
             var query = _context.Comments
@@ -194,7 +195,23 @@ namespace FcCupApi.Controllers
                 .Take(pageSize)
                 .ToListAsync();
 
-            return Ok(comments);
+            var userRatings = new List<CommentRating>();
+
+            if (User.Identity.IsAuthenticated)
+            {
+                // Если пользователь аутентифицирован
+                var username = User.Identity.Name;
+                var user = await _userManager.FindByNameAsync(username!);
+
+                if (user != null)
+                {
+                    userRatings = await _context.Set<CommentRating>()
+                        .Where(x => x.UserId == user.Id && x.ForumId == forumId)
+                        .ToListAsync();
+                }
+            }
+
+            return Ok(new { comments, userRatings });
         }
 
         [HttpGet]
