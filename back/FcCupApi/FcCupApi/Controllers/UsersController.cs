@@ -41,7 +41,7 @@ namespace FcCupApi.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AuthenticateResponse>> Authenticate([FromBody] AuthenticateRequest request)
+        public async Task<ActionResult<AuthenticateResponse>> Authenticate(AuthenticateRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -80,7 +80,7 @@ namespace FcCupApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<AuthenticateResponse>> Register([FromBody] RegisterRequest request)
+        public async Task<ActionResult<AuthenticateResponse>> Register(RegisterRequest request)
         {
             if (!ModelState.IsValid) 
                 return BadRequest(request);
@@ -122,8 +122,7 @@ namespace FcCupApi.Controllers
             });
         }
 
-        [HttpPost]
-        [Route("refresh-token")]
+        [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken(TokenModel? tokenModel)
         {
             if (tokenModel is null)
@@ -155,9 +154,8 @@ namespace FcCupApi.Controllers
             });
         }
 
-        [HttpPost]
+        [HttpPost("revoke/{username}")]
         [Authorize(AuthenticationSchemes = "Bearer", Roles = $"{RoleConsts.Administrator}")]
-        [Route("revoke/{username}")]
         public async Task<IActionResult> Revoke(string username)
         {
             var user = await _userManager.FindByNameAsync(username);
@@ -171,8 +169,7 @@ namespace FcCupApi.Controllers
         }
 
         [Authorize]
-        [HttpPost]
-        [Route("revoke-all")]
+        [HttpPost("revoke-all")]
         public async Task<IActionResult> RevokeAll()
         {
             var users = _userManager.Users.ToList();
@@ -185,9 +182,9 @@ namespace FcCupApi.Controllers
             return Ok();
         }
 
-        [HttpPost]
-        [Route("send-confirm")]
-        public async Task<IActionResult> SendAccountMailConfirmMessage([FromBody] EmailConfirmRequest request)
+        [HttpPost("send-confirm")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SendAccountMailConfirmMessage(EmailConfirmRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
 
@@ -209,9 +206,8 @@ namespace FcCupApi.Controllers
                 return NotFound("Error");
         }
 
-        [HttpGet]
+        [HttpGet("confirm-email")]
         [AllowAnonymous]
-        [Route("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
             if (userId == null || code == null)
@@ -230,8 +226,7 @@ namespace FcCupApi.Controllers
         }
 
 
-        [HttpGet]
-        [Route("user-info")]
+        [HttpGet("user-info")]
         [Authorize]
         public async Task<IActionResult> GetUserInfo()
         {
@@ -249,8 +244,7 @@ namespace FcCupApi.Controllers
             });
         }
 
-        [HttpGet]
-        [Route("profile")]
+        [HttpGet("profile")]
         [Authorize]
         public async Task<IActionResult> GetUserProfile()
         {
@@ -277,8 +271,7 @@ namespace FcCupApi.Controllers
             });
         }
 
-        [HttpGet]
-        [Route("{userId}")]
+        [HttpGet("{userId}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetUserProfile(long userId)
         {

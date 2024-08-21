@@ -6,5 +6,6 @@
         public int CommentId { get; set; }
         public long UserId { get; set; }
         public int Rate { get; set; }
+        public int ForumId {  get; set; }
     }
 }
