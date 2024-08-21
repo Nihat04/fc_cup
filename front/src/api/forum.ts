@@ -70,7 +70,9 @@ export async function postComment({
     comment: string;
     parentCommentId: number;
 }) {
-    const response = await axiosInstance.post(`forum/publish-comment?text=${comment}&forumId=${forumId}`);
+    const response = await axiosInstance.post(
+        `forum/publish-comment?text=${comment}&forumId=${forumId}` + (parentCommentId ? `parrentCommentId=${parentCommentId}` : '')
+    );
     const data = await response.data;
 
     return data;

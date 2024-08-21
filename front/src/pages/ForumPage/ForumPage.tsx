@@ -81,6 +81,7 @@ const ForumItemPage = () => {
                                     <div className={styles['forum__comments__item__bottom']}>
                                         <div className="">
                                             <p className={styles['forum__comments__item__body']}>{commentEl.commentText}</p>
+                                            <button className={styles['forum__comments__item__btn']}>Ответить</button>
                                             <button className={styles['forum__comments__item__btn']}>Показать ответы</button>
                                         </div>
                                         <div className={styles['forum__comments__item__vote']}>
@@ -96,6 +97,13 @@ const ForumItemPage = () => {
                                                 )}
                                                 onClick={() => voteComment(DownVoteComment, commentEl.id)}
                                             ></button>
+                                        </div>
+                                    </div>
+                                    <div className={styles['forum__comments__item__reply']}>
+                                        <textarea className={styles['forum__comments__item__reply__input']} />
+                                        <div className={styles['forum__comments__item__reply__btns']}>
+                                            <button className={styles['forum__comments__item__reply__btn']}>Отмена</button>
+                                            <button className={styles['forum__comments__item__reply__btn']}>Ответить</button>
                                         </div>
                                     </div>
                                 </li>

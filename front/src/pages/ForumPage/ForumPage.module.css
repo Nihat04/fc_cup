@@ -88,6 +88,7 @@
 
 .forum__comments__item__bottom {
     display: flex;
+    margin-bottom: 15px;
     justify-content: space-between;
 }
 
@@ -138,4 +139,25 @@
 
 .forum__comments__item__vote__paragr {
     text-align: center;
+}
+
+.forum__comments__item__reply {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+
+.forum__comments__item__reply__input {
+    margin-bottom: 10px;
+    padding: 5px 15px;
+    width: 100%;
+    color: #fff;
+    resize: vertical;
+    background-color: var(--island-color);
+    border: 1px solid var(--main-color);
+    border-radius: 15px;
+}
+
+.forum__comments__item__reply__btns {
+    margin-left: auto;
 }
